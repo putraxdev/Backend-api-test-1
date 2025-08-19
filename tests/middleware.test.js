@@ -39,6 +39,36 @@ describe('Middleware Tests', () => {
       expect(res.status).toHaveBeenCalledWith(401);
     });
 
+    test('should return 401 if token is expired', () => {
+      // Create an expired token
+      const payload = { id: 1 };
+      const expiredTime = Math.floor(Date.now() / 1000) - 3600; // 1 hour ago
+      const expiredToken = jwt.sign({ ...payload, exp: expiredTime }, 'supersecretkey', {
+        issuer: 'backend-api',
+        audience: 'frontend-app',
+      });
+      req.headers.authorization = `Bearer ${expiredToken}`;
+      authMiddleware(req, res, next);
+      expect(res.status).toHaveBeenCalledWith(401);
+    });
+
+    test('should return 500 for other JWT errors', () => {
+      // Mock jwt.verify to throw a different error
+      const originalVerify = jwt.verify;
+      jwt.verify = jest.fn(() => {
+        const error = new Error('Custom error');
+        error.name = 'UnknownJWTError';
+        throw error;
+      });
+
+      req.headers.authorization = 'Bearer sometoken';
+      authMiddleware(req, res, next);
+      expect(res.status).toHaveBeenCalledWith(500);
+
+      // Restore original function
+      jwt.verify = originalVerify;
+    });
+
     test('should call next if token is valid', () => {
       const token = jwt.sign({ id: 1, username: 'test' }, 'supersecretkey', {
         expiresIn: '1h',

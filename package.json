@@ -13,6 +13,7 @@
     "coverage": "jest --coverage && codecov"
   },
   "jest": {
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
     "transform": {
       "^.+\\.js$": "babel-jest"
     },

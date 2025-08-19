@@ -85,17 +85,13 @@ describe('UserUsecase', () => {
       expect(result.username).toBe('test');
     });
 
-    test('should throw error for expired token', async () => {
-      // Create a token that expires in 1 millisecond
-      const expiredToken = jwt.sign({ id: 1 }, 'supersecretkey', {
-        expiresIn: '1ms',
+    test('should throw error for expired token', () => {
+      // Create a token that's already expired (negative time)
+      const payload = { id: 1 };
+      const expiredTime = Math.floor(Date.now() / 1000) - 3600; // 1 hour ago
+      const expiredToken = jwt.sign({ ...payload, exp: expiredTime }, 'supersecretkey', {
         issuer: 'backend-api',
         audience: 'frontend-app',
-      });
-
-      // Wait a bit to ensure it expires
-      await new Promise((resolve) => {
-        setTimeout(resolve, 10);
       });
 
       expect(() => userUsecase.verifyToken(expiredToken))
@@ -111,6 +107,22 @@ describe('UserUsecase', () => {
       const wrongSecretToken = jwt.sign({ id: 1 }, 'wrongsecret');
       expect(() => userUsecase.verifyToken(wrongSecretToken))
         .toThrow('Invalid token');
+    });
+
+    test('should throw generic error for other JWT errors', () => {
+      // Mock jwt.verify to throw a different error
+      const originalVerify = jwt.verify;
+      jwt.verify = jest.fn(() => {
+        const error = new Error('Custom error');
+        error.name = 'UnknownJWTError';
+        throw error;
+      });
+
+      expect(() => userUsecase.verifyToken('sometoken'))
+        .toThrow('Token verification failed');
+
+      // Restore original function
+      jwt.verify = originalVerify;
     });
   });
 
