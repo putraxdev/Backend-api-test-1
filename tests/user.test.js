@@ -2,6 +2,7 @@ const request = require('supertest');
 const express = require('express');
 
 // Mock the regular db with test db before requiring other modules
+// eslint-disable-next-line global-require
 jest.mock('../src/models/db', () => require('../src/models/testDb'));
 
 const sequelize = require('../src/models/testDb');
