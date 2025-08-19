@@ -75,6 +75,7 @@ describe('UserUsecase', () => {
     test('should verify valid token', () => {
       const payload = { id: 1, username: 'test' };
       const token = jwt.sign(payload, 'supersecretkey', {
+        expiresIn: '1h',
         issuer: 'backend-api',
         audience: 'frontend-app',
       });

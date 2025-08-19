@@ -41,6 +41,7 @@ describe('Middleware Tests', () => {
 
     test('should call next if token is valid', () => {
       const token = jwt.sign({ id: 1, username: 'test' }, 'supersecretkey', {
+        expiresIn: '1h',
         issuer: 'backend-api',
         audience: 'frontend-app',
       });
