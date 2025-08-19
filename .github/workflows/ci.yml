@@ -154,20 +154,80 @@ jobs:
     - name: Test Docker image
       run: |
         echo "🧪 Testing Docker image..."
-        # Run container in background
-        docker run -d --name test-container -p 3001:3000 \
-          -e DB_HOST=localhost \
-          -e DB_NAME=test \
-          -e DB_USER=test \
-          -e DB_PASS=test \
-          -e JWT_SECRET=test-secret \
-          advanced-backend-api:test
+        # Create a custom network for container communication
+        docker network create test-network
         
-        # Wait for container to start
+        # Run PostgreSQL container on the custom network
+        docker run -d --name test-postgres \
+          --network test-network \
+          -e POSTGRES_USER=appuser \
+          -e POSTGRES_PASSWORD=appsecret \
+          -e POSTGRES_DB=appdb \
+          postgres:15
+        
+        # Wait for PostgreSQL to be ready
+        echo "⏳ Waiting for PostgreSQL to be ready..."
         sleep 10
         
-        # Test health endpoint
-        docker exec test-container curl -f http://localhost:3000/health || exit 1
+        # Run application container on the same network
+        docker run -d --name test-container \
+          --network test-network \
+          -p 3001:3000 \
+          -e DB_HOST=test-postgres \
+          -e DB_PORT=5432 \
+          -e DB_NAME=appdb \
+          -e DB_USER=appuser \
+          -e DB_PASS=appsecret \
+          -e JWT_SECRET=supersecretkey \
+          -e NODE_ENV=production \
+          advanced-backend-api:test
+        
+        # Wait for container to start and be ready
+        echo "⏳ Waiting for application to be ready..."
+        sleep 15
+        
+        # Check if container is still running
+        if ! docker ps | grep test-container; then
+          echo "❌ Container failed to start or exited immediately"
+          docker logs test-container
+          docker logs test-postgres
+          exit 1
+        fi
+        
+        # Test health endpoint using curl from host
+        echo "🔍 Testing health endpoint..."
+        for i in {1..5}; do
+          if curl -f http://localhost:3001/health; then
+            echo "✅ Health check passed!"
+            break
+          else
+            echo "⏳ Attempt $i failed, retrying in 3 seconds..."
+            sleep 3
+            if [ $i -eq 5 ]; then
+              echo "❌ Health check failed after 5 attempts"
+              echo "📋 Application logs:"
+              docker logs test-container
+              echo "📋 PostgreSQL logs:"
+              docker logs test-postgres
+              exit 1
+            fi
+          fi
+        done
+        
+        # Cleanup
+        docker stop test-container test-postgres || true
+        docker rm test-container test-postgres || true
+        docker network rm test-network || true
+          else
+            echo "⏳ Attempt $i failed, retrying in 3 seconds..."
+            sleep 3
+            if [ $i -eq 5 ]; then
+              echo "❌ Health check failed after 5 attempts"
+              docker logs test-container
+              exit 1
+            fi
+          fi
+        done
         
         # Cleanup
         docker stop test-container
