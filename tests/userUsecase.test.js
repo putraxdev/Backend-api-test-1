@@ -93,7 +93,9 @@ describe('UserUsecase', () => {
       });
 
       // Wait a bit to ensure it expires
-      await new Promise(resolve => setTimeout(resolve, 10));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 10);
+      });
 
       expect(() => userUsecase.verifyToken(expiredToken))
         .toThrow('Token expired');
