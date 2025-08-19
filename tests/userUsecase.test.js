@@ -84,12 +84,16 @@ describe('UserUsecase', () => {
       expect(result.username).toBe('test');
     });
 
-    test('should throw error for expired token', () => {
+    test('should throw error for expired token', async () => {
+      // Create a token that expires in 1 millisecond
       const expiredToken = jwt.sign({ id: 1 }, 'supersecretkey', {
-        expiresIn: '-1h',
+        expiresIn: '1ms',
         issuer: 'backend-api',
         audience: 'frontend-app',
       });
+
+      // Wait a bit to ensure it expires
+      await new Promise(resolve => setTimeout(resolve, 10));
 
       expect(() => userUsecase.verifyToken(expiredToken))
         .toThrow('Token expired');

@@ -40,7 +40,10 @@ describe('Middleware Tests', () => {
     });
 
     test('should call next if token is valid', () => {
-      const token = jwt.sign({ id: 1, username: 'test' }, 'supersecretkey');
+      const token = jwt.sign({ id: 1, username: 'test' }, 'supersecretkey', {
+        issuer: 'backend-api',
+        audience: 'frontend-app',
+      });
       req.headers.authorization = `Bearer ${token}`;
       authMiddleware(req, res, next);
       expect(next).toHaveBeenCalled();
