@@ -1,0 +1,105 @@
+# CodeRabbit Configuration - Strict Mode
+
+reviews:
+  # Enable AI-powered code reviews with strict requirements
+  enable: true
+  
+  # Disable auto-approve for strict quality control
+  auto_approve:
+    enable: false
+  
+  # Review settings
+  settings:
+    # Focus areas for review
+    focus:
+      - security
+      - performance
+      - best_practices
+      - code_quality
+      - testing
+      - maintainability
+    
+    # Files to ignore
+    ignore:
+      - "node_modules/**"
+      - "coverage/**"
+      - "*.log"
+      - ".env*"
+      - "dist/**"
+      - "build/**"
+    
+    # Language-specific settings
+    languages:
+      javascript:
+        linting: true
+        security_checks: true
+        performance_analysis: true
+        complexity_analysis: true
+      
+    # Strict custom rules
+    rules:
+      - name: "No console.log in production"
+        pattern: "console\\.log"
+        severity: "error"
+        message: "Remove console.log statements in production code"
+        block_merge: true
+      
+      - name: "No TODO comments"
+        pattern: "TODO|FIXME"
+        severity: "warning"
+        message: "Resolve TODO/FIXME before merge"
+        block_merge: true
+      
+      - name: "Missing error handling"
+        pattern: "await\\s+\\w+\\([^)]*\\)(?!.*catch)"
+        severity: "error"
+        message: "Missing error handling for async operation"
+        block_merge: true
+      
+      - name: "Hardcoded secrets"
+        pattern: "(password|secret|key|token)\\s*=\\s*['\"][^'\"]+['\"]"
+        severity: "error"
+        message: "Potential hardcoded secret detected"
+        block_merge: true
+
+# Integration settings
+integrations:
+  github:
+    auto_merge:
+      enable: false  # Disabled for strict control
+    
+    # Require manual approval for sensitive changes
+    require_approval:
+      - "src/models/**"
+      - "src/repositories/**"
+      - "package.json"
+      - "docker-compose.yml"
+      - "Dockerfile"
+      - ".github/workflows/**"
+    
+    notifications:
+      slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
+      email: true
+
+# Strict quality gates
+quality_gates:
+  coverage:
+    minimum: 90
+    fail_on_decrease: true
+    block_merge_below_threshold: true
+  
+  complexity:
+    max_cyclomatic: 8
+    max_cognitive: 12
+    block_merge_above_threshold: true
+  
+  security:
+    block_on_vulnerabilities: true
+    allowed_levels: []  # No vulnerabilities allowed
+  
+  testing:
+    require_tests_for_new_code: true
+    minimum_test_coverage_for_new_code: 95
+  
+  documentation:
+    require_documentation_for_new_functions: true

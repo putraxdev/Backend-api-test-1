@@ -1,0 +1,53 @@
+#!/bin/sh
+# Pre-push hook to check test coverage, linting, and build
+
+echo "🔍 Running quality checks before push..."
+
+# 1. Run linter (strict mode)
+echo "📋 Checking linting..."
+npm run lint
+if [ $? -ne 0 ]; then
+    echo "❌ Linting failed. Fix all ESLint errors and warnings."
+    exit 1
+fi
+echo "✅ Linting passed"
+
+# 2. Run tests with coverage
+echo "🧪 Running tests and checking coverage..."
+npm test > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "❌ Tests failed. Push aborted."
+    exit 1
+fi
+
+# 3. Extract coverage percentage
+COVERAGE=$(npm test -- --silent 2>/dev/null | grep -oP 'All files.*?(\d+\.\d+)' | grep -oP '\d+\.\d+' | tail -1)
+
+if [ -z "$COVERAGE" ]; then
+    echo "❌ Could not determine coverage. Push aborted."
+    exit 1
+fi
+
+# 4. Check if coverage meets 90% threshold
+THRESHOLD=90
+if (( $(echo "$COVERAGE < $THRESHOLD" | bc -l) )); then
+    echo "❌ Coverage $COVERAGE% is below $THRESHOLD% threshold. Push aborted."
+    echo "📝 Please add more tests to increase coverage to at least 90%."
+    exit 1
+fi
+echo "✅ Coverage $COVERAGE% meets $THRESHOLD% threshold"
+
+# 5. Test Docker build
+echo "🐳 Testing Docker build..."
+docker build -t test-build . > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "❌ Docker build failed. Push aborted."
+    exit 1
+fi
+echo "✅ Docker build successful"
+
+# Cleanup
+docker rmi test-build > /dev/null 2>&1
+
+echo "🎉 All quality checks passed! Push allowed."
+exit 0
