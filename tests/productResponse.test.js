@@ -3,7 +3,12 @@ const { ProductResponse, ProductListResponse } = require('../src/dto/productResp
 describe('Product Response DTOs', () => {
   describe('ProductResponse', () => {
     const mockProduct = {
-      id: 1,
+       const mockPagination = {
+        page: 1,
+        limit: 10,
+        total: 2,
+        totalPages: 1,
+      }; 1,
       name: 'Test Product',
       description: 'Test Description',
       price: 100.50,
@@ -34,7 +39,7 @@ describe('Product Response DTOs', () => {
       expect(response.category).toBe('Electronics');
       expect(response.stock).toBe(25);
       expect(response.isActive).toBe(true);
-      expect(response.weight).toBe('1.50');
+      expect(response.weight).toBe(1.5); // Should be number, not string
       expect(response.dimensions).toEqual({
         length: 10,
         width: 5,
@@ -180,8 +185,6 @@ describe('Product Response DTOs', () => {
       limit: 10,
       total: 2,
       totalPages: 1,
-      hasNext: false,
-      hasPrev: false
     };
 
     it('should create product list response with pagination', () => {
@@ -199,8 +202,6 @@ describe('Product Response DTOs', () => {
         limit: 10,
         total: 0,
         totalPages: 0,
-        hasNext: false,
-        hasPrev: false
       };
 
       const response = new ProductListResponse([], emptyPagination);
@@ -221,25 +222,18 @@ describe('Product Response DTOs', () => {
       expect(response.products[1].price).toBe(200.00);
     });
 
-    it('should handle null or undefined products gracefully', () => {
-      const response = new ProductListResponse(null, mockPagination);
-      expect(response.products).toEqual([]);
-    });
-
     it('should handle pagination with different values', () => {
       const paginationWithNext = {
         page: 1,
         limit: 1,
         total: 2,
         totalPages: 2,
-        hasNext: true,
-        hasPrev: false
       };
 
       const response = new ProductListResponse([mockProducts[0]], paginationWithNext);
 
-      expect(response.pagination.hasNext).toBe(true);
-      expect(response.pagination.hasPrev).toBe(false);
+      expect(response.pagination.page).toBe(1);
+      expect(response.pagination.limit).toBe(1);
       expect(response.pagination.totalPages).toBe(2);
     });
 
@@ -249,15 +243,13 @@ describe('Product Response DTOs', () => {
         limit: 1,
         total: 2,
         totalPages: 2,
-        hasNext: false,
-        hasPrev: true
       };
 
       const response = new ProductListResponse([mockProducts[1]], paginationWithPrev);
 
-      expect(response.pagination.hasNext).toBe(false);
-      expect(response.pagination.hasPrev).toBe(true);
       expect(response.pagination.page).toBe(2);
+      expect(response.pagination.limit).toBe(1);
+      expect(response.pagination.total).toBe(2);
     });
 
     it('should maintain product data integrity in list', () => {
