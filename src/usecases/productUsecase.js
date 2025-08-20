@@ -4,8 +4,8 @@ const { ProductResponse, ProductListResponse } = require('../dto/productResponse
 const { ErrorResponse } = require('../dto/errorResponse');
 
 class ProductUsecase {
-  constructor() {
-    this.productRepository = new ProductRepository();
+  constructor(productRepository = null) {
+    this.productRepository = productRepository || new ProductRepository();
   }
 
   async createProduct(productData, userId) {
@@ -170,7 +170,8 @@ class ProductUsecase {
 
   async updateProductStock(id, stock, userId) {
     try {
-      if (stock === undefined || stock === null || Number.isNaN(stock) || parseInt(stock, 10) < 0) {
+      const stockNum = parseInt(stock, 10);
+      if (stock === undefined || stock === null || Number.isNaN(stockNum) || stockNum < 0) {
         throw new ErrorResponse('Stock must be a non-negative integer', 'VALIDATION_ERROR', 400);
       }
 
@@ -181,7 +182,7 @@ class ProductUsecase {
 
       const updatedProduct = await this.productRepository.updateStock(
         id,
-        parseInt(stock, 10),
+        stockNum,
         userId,
       );
       return ProductResponse.fromProduct(updatedProduct);
@@ -195,7 +196,7 @@ class ProductUsecase {
 
   async getProductsByCategory(category) {
     try {
-      if (!category || category.trim().length === 0) {
+      if (!category || (typeof category === 'string' && category.trim().length === 0)) {
         throw new ErrorResponse('Category is required', 'VALIDATION_ERROR', 400);
       }
 

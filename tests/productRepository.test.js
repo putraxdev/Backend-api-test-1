@@ -2,11 +2,8 @@ const ProductRepository = require('../src/repositories/productRepository');
 const { Product, User, sequelize } = require('../src/models/testModels');
 
 // Mock the actual models
-const ProductModel = require('../src/models/testModels').Product;
-const UserModel = require('../src/models/testModels').User;
-
-jest.mock('../src/models/product', () => ProductModel);
-jest.mock('../src/models/user', () => UserModel);
+jest.mock('../src/models/product', () => require('../src/models/testModels').Product);
+jest.mock('../src/models/user', () => require('../src/models/testModels').User);
 
 describe('Product Repository', () => {
   let productRepository;

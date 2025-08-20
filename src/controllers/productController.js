@@ -2,6 +2,17 @@ const ProductUsecase = require('../usecases/productUsecase');
 const { ErrorResponse } = require('../dto/errorResponse');
 
 class ProductController {
+  // Helper method to format ErrorResponse for consistent API responses
+  formatErrorResponse(error) {
+    if (error instanceof ErrorResponse) {
+      return {
+        message: error.error.message,
+        code: error.error.code,
+        timestamp: error.error.timestamp,
+      };
+    }
+    return error;
+  }
   constructor() {
     this.productUsecase = new ProductUsecase();
   }
@@ -10,7 +21,8 @@ class ProductController {
     try {
       const userId = req.user?.id;
       if (!userId) {
-        return res.status(401).json(new ErrorResponse('Authentication required', 'UNAUTHORIZED'));
+        const authError = new ErrorResponse('Authentication required', 'UNAUTHORIZED', 401);
+        return res.status(401).json(this.formatErrorResponse(authError));
       }
 
       const product = await this.productUsecase.createProduct(req.body, userId);
@@ -21,12 +33,15 @@ class ProductController {
       });
     } catch (error) {
       console.error('Create product error:', error);
-      console.error('Error stack:', error.stack);
-      console.error('Error name:', error.name);
-      console.error('Error message:', error.message);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
+      }
+
+      if (error.name && error.stack) {
+        console.error('Error stack:', error.stack);
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
       }
 
       return res.status(500).json(new ErrorResponse('Failed to create product', 'INTERNAL_ERROR'));
@@ -57,7 +72,7 @@ class ProductController {
       console.error('Get all products error:', error);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
       }
 
       return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
@@ -78,7 +93,7 @@ class ProductController {
       console.error('Get product by ID error:', error);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
       }
 
       return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
@@ -99,7 +114,7 @@ class ProductController {
       console.error('Get product by SKU error:', error);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
       }
 
       return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
@@ -112,7 +127,8 @@ class ProductController {
       const userId = req.user?.id;
 
       if (!userId) {
-        return res.status(401).json(new ErrorResponse('Authentication required', 'UNAUTHORIZED'));
+        const authError = new ErrorResponse('Authentication required', 'UNAUTHORIZED', 401);
+        return res.status(401).json(this.formatErrorResponse(authError));
       }
 
       const product = await this.productUsecase.updateProduct(id, req.body, userId);
@@ -126,7 +142,7 @@ class ProductController {
       console.error('Update product error:', error);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
       }
 
       return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
@@ -146,7 +162,7 @@ class ProductController {
       console.error('Delete product error:', error);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
       }
 
       return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
@@ -159,7 +175,8 @@ class ProductController {
       const userId = req.user?.id;
 
       if (!userId) {
-        return res.status(401).json(new ErrorResponse('Authentication required', 'UNAUTHORIZED'));
+        const authError = new ErrorResponse("Authentication required", "UNAUTHORIZED", 401);
+        return res.status(401).json(this.formatErrorResponse(authError));
       }
 
       const product = await this.productUsecase.softDeleteProduct(id, userId);
@@ -173,7 +190,7 @@ class ProductController {
       console.error('Soft delete product error:', error);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
       }
 
       return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
@@ -187,7 +204,8 @@ class ProductController {
       const userId = req.user?.id;
 
       if (!userId) {
-        return res.status(401).json(new ErrorResponse('Authentication required', 'UNAUTHORIZED'));
+        const authError = new ErrorResponse("Authentication required", "UNAUTHORIZED", 401);
+        return res.status(401).json(this.formatErrorResponse(authError));
       }
 
       const product = await this.productUsecase.updateProductStock(id, stock, userId);
@@ -201,7 +219,7 @@ class ProductController {
       console.error('Update product stock error:', error);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
       }
 
       return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
@@ -222,7 +240,7 @@ class ProductController {
       console.error('Get products by category error:', error);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
       }
 
       return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
@@ -243,7 +261,7 @@ class ProductController {
       console.error('Get low stock products error:', error);
 
       if (error instanceof ErrorResponse) {
-        return res.status(error.statusCode || 500).json(error);
+        return res.status(error.statusCode || 500).json(this.formatErrorResponse(error));
       }
 
       return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));

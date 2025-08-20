@@ -27,10 +27,8 @@ describe('Product Usecase', () => {
       findLowStock: jest.fn(),
     };
 
-    // Mock the constructor to return our mock instance
-    ProductRepository.mockImplementation(() => mockProductRepository);
-
-    productUsecase = new ProductUsecase();
+    // Create usecase with mocked repository
+    productUsecase = new ProductUsecase(mockProductRepository);
   });
 
   describe('createProduct', () => {

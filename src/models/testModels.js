@@ -111,6 +111,10 @@ const Product = sequelize.define('Product', {
   weight: {
     type: DataTypes.DECIMAL(8, 2),
     allowNull: true,
+    get() {
+      const value = this.getDataValue('weight');
+      return value ? parseFloat(value).toFixed(2) : null;
+    },
     validate: {
       min: {
         args: [0],
@@ -130,16 +134,28 @@ const Product = sequelize.define('Product', {
     },
     validate: {
       isValidDimensions(value) {
-        if (value && typeof value === 'object') {
-          const { length, width, height } = value;
-          if (length !== undefined && (typeof length !== 'number' || length < 0)) {
-            throw new Error('Length must be a positive number');
+        if (value) {
+          let parsedValue = value;
+          // If it's a string, parse it
+          if (typeof value === 'string') {
+            try {
+              parsedValue = JSON.parse(value);
+            } catch (e) {
+              throw new Error('Invalid dimensions format');
+            }
           }
-          if (width !== undefined && (typeof width !== 'number' || width < 0)) {
-            throw new Error('Width must be a positive number');
-          }
-          if (height !== undefined && (typeof height !== 'number' || height < 0)) {
-            throw new Error('Height must be a positive number');
+          
+          if (typeof parsedValue === 'object' && parsedValue !== null) {
+            const { length, width, height } = parsedValue;
+            if (length !== undefined && (typeof length !== 'number' || length < 0)) {
+              throw new Error('Length must be a positive number');
+            }
+            if (width !== undefined && (typeof width !== 'number' || width < 0)) {
+              throw new Error('Width must be a positive number');
+            }
+            if (height !== undefined && (typeof height !== 'number' || height < 0)) {
+              throw new Error('Height must be a positive number');
+            }
           }
         }
       },

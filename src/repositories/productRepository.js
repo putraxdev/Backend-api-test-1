@@ -4,6 +4,11 @@ const Product = require('../models/product');
 const User = require('../models/user');
 
 class ProductRepository {
+  // Helper method to get case-insensitive operator based on database dialect
+  getCaseInsensitiveOp() {
+    const dialect = Product.sequelize.getDialect();
+    return dialect === 'postgres' ? Op.iLike : Op.like;
+  }
   async create(productData, userId) {
     try {
       const product = await Product.create({
@@ -36,16 +41,18 @@ class ProductRepository {
 
       // Search by name, description, or SKU
       if (search) {
+        const likeOp = this.getCaseInsensitiveOp();
         whereClause[Op.or] = [
-          { name: { [Op.iLike]: `%${search}%` } },
-          { description: { [Op.iLike]: `%${search}%` } },
-          { sku: { [Op.iLike]: `%${search}%` } },
+          { name: { [likeOp]: `%${search}%` } },
+          { description: { [likeOp]: `%${search}%` } },
+          { sku: { [likeOp]: `%${search}%` } },
         ];
       }
 
       // Filter by category
       if (category) {
-        whereClause.category = { [Op.iLike]: `%${category}%` };
+        const likeOp = this.getCaseInsensitiveOp();
+        whereClause.category = { [likeOp]: `%${category}%` };
       }
 
       // Filter by active status
@@ -212,9 +219,10 @@ class ProductRepository {
 
   async findByCategory(category) {
     try {
+      const likeOp = this.getCaseInsensitiveOp();
       const products = await Product.findAll({
         where: {
-          category: { [Op.iLike]: `%${category}%` },
+          category: { [likeOp]: `%${category}%` },
           isActive: true,
         },
         include: [
