@@ -15,7 +15,7 @@ class ProductResponse {
     this.updatedBy = product.updatedBy;
     this.createdAt = product.createdAt;
     this.updatedAt = product.updatedAt;
-    
+
     // Include creator and updater information if available
     if (product.creator) {
       this.creator = {
@@ -24,7 +24,7 @@ class ProductResponse {
         email: product.creator.email,
       };
     }
-    
+
     if (product.updater) {
       this.updater = {
         id: product.updater.id,
@@ -39,7 +39,7 @@ class ProductResponse {
   }
 
   static fromProducts(products) {
-    return products.map(product => new ProductResponse(product));
+    return products.map((product) => new ProductResponse(product));
   }
 }
 

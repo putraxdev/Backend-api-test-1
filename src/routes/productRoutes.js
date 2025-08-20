@@ -127,7 +127,7 @@ const productController = new ProductController();
  *         updatedBy: 1
  *         createdAt: "2024-01-01T00:00:00.000Z"
  *         updatedAt: "2024-01-01T00:00:00.000Z"
- * 
+ *
  *     ProductRequest:
  *       type: object
  *       required:
@@ -179,7 +179,7 @@ const productController = new ProductController();
  *           type: array
  *           items:
  *             type: string
- * 
+ *
  *     ProductListResponse:
  *       type: object
  *       properties:
@@ -205,7 +205,7 @@ const productController = new ProductController();
  *                   type: integer
  *                 totalPages:
  *                   type: integer
- * 
+ *
  *     ProductResponse:
  *       type: object
  *       properties:
@@ -215,7 +215,7 @@ const productController = new ProductController();
  *           type: string
  *         data:
  *           $ref: '#/components/schemas/Product'
- * 
+ *
  *     ErrorResponse:
  *       type: object
  *       properties:

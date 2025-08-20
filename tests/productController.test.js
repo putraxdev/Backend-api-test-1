@@ -84,7 +84,7 @@ describe('Product Controller', () => {
       const invalidData = { name: 'Test' }; // Missing required fields
 
       mockProductUsecase.createProduct.mockRejectedValue(
-        new ErrorResponse('Validation error', 'VALIDATION_ERROR', 400)
+        new ErrorResponse('Validation error', 'VALIDATION_ERROR', 400),
       );
 
       const response = await request(app)
@@ -105,7 +105,7 @@ describe('Product Controller', () => {
       };
 
       mockProductUsecase.createProduct.mockRejectedValue(
-        new ErrorResponse('SKU already exists', 'DUPLICATE_SKU', 409)
+        new ErrorResponse('SKU already exists', 'DUPLICATE_SKU', 409),
       );
 
       const response = await request(app)
@@ -146,7 +146,9 @@ describe('Product Controller', () => {
     it('should support query parameters', async () => {
       const mockResponse = {
         products: [{ id: 1, name: 'Gaming Laptop' }],
-        pagination: { page: 1, limit: 5, total: 1, totalPages: 1 },
+        pagination: {
+          page: 1, limit: 5, total: 1, totalPages: 1,
+        },
       };
 
       mockProductUsecase.getAllProducts.mockResolvedValue(mockResponse);
@@ -185,7 +187,7 @@ describe('Product Controller', () => {
 
     it('should handle product not found', async () => {
       mockProductUsecase.getProductById.mockRejectedValue(
-        new ErrorResponse('Product not found', 'NOT_FOUND', 404)
+        new ErrorResponse('Product not found', 'NOT_FOUND', 404),
       );
 
       const response = await request(app)

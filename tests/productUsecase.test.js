@@ -12,7 +12,7 @@ describe('Product Usecase', () => {
   beforeEach(() => {
     // Clear all mocks
     jest.clearAllMocks();
-    
+
     // Create mock repository instance
     mockProductRepository = {
       create: jest.fn(),
@@ -29,7 +29,7 @@ describe('Product Usecase', () => {
 
     // Mock the constructor to return our mock instance
     ProductRepository.mockImplementation(() => mockProductRepository);
-    
+
     productUsecase = new ProductUsecase();
   });
 
@@ -47,7 +47,7 @@ describe('Product Usecase', () => {
 
     it('should create product successfully', async () => {
       const mockProduct = { id: 1, ...validProductData, createdBy: userId };
-      
+
       mockProductRepository.findBySku.mockResolvedValue(null);
       mockProductRepository.create.mockResolvedValue(mockProduct);
 
@@ -56,7 +56,7 @@ describe('Product Usecase', () => {
       expect(mockProductRepository.findBySku).toHaveBeenCalledWith(validProductData.sku);
       expect(mockProductRepository.create).toHaveBeenCalledWith(
         expect.objectContaining(validProductData),
-        userId
+        userId,
       );
       expect(result.id).toBe(1);
       expect(result.name).toBe(validProductData.name);
@@ -74,7 +74,7 @@ describe('Product Usecase', () => {
 
     it('should throw error if SKU already exists', async () => {
       const existingProduct = { id: 2, sku: validProductData.sku };
-      
+
       mockProductRepository.findBySku.mockResolvedValue(existingProduct);
 
       await expect(productUsecase.createProduct(validProductData, userId))
@@ -125,7 +125,9 @@ describe('Product Usecase', () => {
 
       mockProductRepository.findAll.mockResolvedValue({
         products: [],
-        pagination: { page: 2, limit: 5, total: 0, totalPages: 0 },
+        pagination: {
+          page: 2, limit: 5, total: 0, totalPages: 0,
+        },
       });
 
       await productUsecase.getAllProducts(options);
@@ -137,7 +139,7 @@ describe('Product Usecase', () => {
   describe('getProductById', () => {
     it('should return product when found', async () => {
       const mockProduct = { id: 1, name: 'Test Product' };
-      
+
       mockProductRepository.findById.mockResolvedValue(mockProduct);
 
       const result = await productUsecase.getProductById(1);
@@ -158,7 +160,7 @@ describe('Product Usecase', () => {
   describe('getProductBySku', () => {
     it('should return product when found', async () => {
       const mockProduct = { id: 1, sku: 'TEST-001', name: 'Test Product' };
-      
+
       mockProductRepository.findBySku.mockResolvedValue(mockProduct);
 
       const result = await productUsecase.getProductBySku('TEST-001');
@@ -196,7 +198,7 @@ describe('Product Usecase', () => {
       expect(mockProductRepository.update).toHaveBeenCalledWith(
         1,
         expect.objectContaining(updateData),
-        userId
+        userId,
       );
       expect(result.name).toBe(updateData.name);
     });

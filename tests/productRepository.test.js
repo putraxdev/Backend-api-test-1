@@ -12,7 +12,7 @@ describe('Product Repository', () => {
   beforeAll(async () => {
     await sequelize.sync({ force: true });
     productRepository = new ProductRepository();
-    
+
     // Create a test user
     testUser = await User.create({
       username: 'testuser',
@@ -118,43 +118,41 @@ describe('Product Repository', () => {
       const result = await productRepository.findAll({ search: 'Gaming' });
 
       expect(result.products).toHaveLength(2);
-      expect(result.products.every(p => p.name.includes('Gaming'))).toBe(true);
+      expect(result.products.every((p) => p.name.includes('Gaming'))).toBe(true);
     });
 
     it('should support category filter', async () => {
       const result = await productRepository.findAll({ category: 'Electronics' });
 
       expect(result.products).toHaveLength(3);
-      expect(result.products.every(p => p.category === 'Electronics')).toBe(true);
+      expect(result.products.every((p) => p.category === 'Electronics')).toBe(true);
     });
 
     it('should support isActive filter', async () => {
       const result = await productRepository.findAll({ isActive: true });
 
       expect(result.products).toHaveLength(3);
-      expect(result.products.every(p => p.isActive === true)).toBe(true);
+      expect(result.products.every((p) => p.isActive === true)).toBe(true);
     });
 
     it('should support price range filter', async () => {
-      const result = await productRepository.findAll({ 
-        minPrice: 1000000, 
-        maxPrice: 5000000 
+      const result = await productRepository.findAll({
+        minPrice: 1000000,
+        maxPrice: 5000000,
       });
 
       expect(result.products.length).toBeGreaterThan(0);
-      expect(result.products.every(p => 
-        parseFloat(p.price) >= 1000000 && parseFloat(p.price) <= 5000000
-      )).toBe(true);
+      expect(result.products.every((p) => parseFloat(p.price) >= 1000000 && parseFloat(p.price) <= 5000000)).toBe(true);
     });
 
     it('should support sorting', async () => {
-      const result = await productRepository.findAll({ 
-        sortBy: 'price', 
-        sortOrder: 'ASC' 
+      const result = await productRepository.findAll({
+        sortBy: 'price',
+        sortOrder: 'ASC',
       });
 
       expect(result.products).toHaveLength(4);
-      
+
       for (let i = 1; i < result.products.length; i++) {
         expect(parseFloat(result.products[i].price))
           .toBeGreaterThanOrEqual(parseFloat(result.products[i - 1].price));
@@ -333,8 +331,8 @@ describe('Product Repository', () => {
       const result = await productRepository.findByCategory('Electronics');
 
       expect(result).toHaveLength(2);
-      expect(result.every(p => p.category === 'Electronics')).toBe(true);
-      expect(result.every(p => p.isActive === true)).toBe(true);
+      expect(result.every((p) => p.category === 'Electronics')).toBe(true);
+      expect(result.every((p) => p.isActive === true)).toBe(true);
     });
   });
 
@@ -372,8 +370,8 @@ describe('Product Repository', () => {
       const result = await productRepository.findLowStock(10);
 
       expect(result).toHaveLength(2);
-      expect(result.every(p => p.stock <= 10)).toBe(true);
-      expect(result.every(p => p.isActive === true)).toBe(true);
+      expect(result.every((p) => p.stock <= 10)).toBe(true);
+      expect(result.every((p) => p.isActive === true)).toBe(true);
     });
 
     it('should use default threshold of 10', async () => {

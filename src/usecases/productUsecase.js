@@ -29,13 +29,13 @@ class ProductUsecase {
       if (error instanceof ErrorResponse) {
         throw error;
       }
-      
+
       if (error.name === 'SequelizeUniqueConstraintError') {
         throw new ErrorResponse('SKU already exists', 'DUPLICATE_SKU', 409);
       }
-      
+
       if (error.name === 'SequelizeValidationError') {
-        const validationErrors = error.errors.map(err => err.message);
+        const validationErrors = error.errors.map((err) => err.message);
         throw new ErrorResponse(validationErrors.join(', '), 'VALIDATION_ERROR', 400);
       }
 
@@ -55,7 +55,7 @@ class ProductUsecase {
   async getProductById(id) {
     try {
       const product = await this.productRepository.findById(id);
-      
+
       if (!product) {
         throw new ErrorResponse('Product not found', 'NOT_FOUND', 404);
       }
@@ -72,7 +72,7 @@ class ProductUsecase {
   async getProductBySku(sku) {
     try {
       const product = await this.productRepository.findBySku(sku);
-      
+
       if (!product) {
         throw new ErrorResponse('Product not found', 'NOT_FOUND', 404);
       }
@@ -115,13 +115,13 @@ class ProductUsecase {
       if (error instanceof ErrorResponse) {
         throw error;
       }
-      
+
       if (error.name === 'SequelizeUniqueConstraintError') {
         throw new ErrorResponse('SKU already exists', 'DUPLICATE_SKU', 409);
       }
-      
+
       if (error.name === 'SequelizeValidationError') {
-        const validationErrors = error.errors.map(err => err.message);
+        const validationErrors = error.errors.map((err) => err.message);
         throw new ErrorResponse(validationErrors.join(', '), 'VALIDATION_ERROR', 400);
       }
 
@@ -137,7 +137,7 @@ class ProductUsecase {
       }
 
       const isDeleted = await this.productRepository.delete(id);
-      
+
       if (!isDeleted) {
         throw new ErrorResponse('Failed to delete product', 'INTERNAL_ERROR', 500);
       }

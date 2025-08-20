@@ -5,7 +5,7 @@ describe('Product Model', () => {
 
   beforeAll(async () => {
     await sequelize.sync({ force: true });
-    
+
     // Create a test user for foreign key relationships
     testUser = await User.create({
       username: 'testuser',
@@ -255,10 +255,10 @@ describe('Product Model', () => {
       };
 
       const product = await Product.create(productData);
-      
+
       await product.update(
         { name: 'Updated Product' },
-        { userId: testUser.id }
+        { userId: testUser.id },
       );
 
       await product.reload();

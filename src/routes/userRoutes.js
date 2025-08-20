@@ -47,7 +47,7 @@ const router = express.Router();
  *         email: "john@example.com"
  *         createdAt: "2024-01-01T00:00:00.000Z"
  *         updatedAt: "2024-01-01T00:00:00.000Z"
- * 
+ *
  *     UserRegisterRequest:
  *       type: object
  *       required:
@@ -73,7 +73,7 @@ const router = express.Router();
  *         username: "johndoe"
  *         email: "john@example.com"
  *         password: "SecurePass123"
- * 
+ *
  *     UserLoginRequest:
  *       type: object
  *       required:
@@ -89,7 +89,7 @@ const router = express.Router();
  *       example:
  *         username: "johndoe"
  *         password: "SecurePass123"
- * 
+ *
  *     UserResponse:
  *       type: object
  *       properties:
@@ -99,7 +99,7 @@ const router = express.Router();
  *           type: string
  *         data:
  *           $ref: '#/components/schemas/User'
- * 
+ *
  *     LoginResponse:
  *       type: object
  *       properties:

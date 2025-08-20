@@ -9,7 +9,7 @@ class ProductRepository {
         ...productData,
         createdBy: userId,
       });
-      
+
       return await this.findById(product.id);
     } catch (error) {
       throw error;
@@ -153,7 +153,7 @@ class ProductRepository {
         {
           where: { id },
           userId, // This will trigger the beforeUpdate hook
-        }
+        },
       );
 
       if (updatedRowsCount === 0) {
@@ -196,7 +196,7 @@ class ProductRepository {
         {
           where: { id },
           userId,
-        }
+        },
       );
 
       if (updatedRowsCount === 0) {

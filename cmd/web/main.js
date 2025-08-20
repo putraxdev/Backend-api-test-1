@@ -24,11 +24,11 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
 
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
     version: '1.0.0',
-    documentation: '/api-docs'
+    documentation: '/api-docs',
   });
 });
 
@@ -56,9 +56,9 @@ async function startServer() {
     // Sync models in the correct order - User first, then Product
     await User.sync();
     await Product.sync();
-    
+
     console.log('Database synchronized');
-    
+
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`Health check: http://localhost:${PORT}/health`);
