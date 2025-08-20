@@ -9,6 +9,7 @@ jest.mock('../src/usecases/productUsecase');
 
 describe('Product Controller', () => {
   let app;
+  let appWithoutAuth;
   let mockProductUsecase;
 
   beforeEach(() => {
@@ -55,6 +56,26 @@ describe('Product Controller', () => {
     app.get('/products/sku/:sku', (req, res) => productController.getProductBySku(req, res));
     app.get('/products/category/:category', (req, res) => productController.getProductsByCategory(req, res));
     app.get('/products/reports/low-stock', (req, res) => productController.getLowStockProducts(req, res));
+
+    // Create app without auth for testing authentication requirements
+    appWithoutAuth = express();
+    appWithoutAuth.use(express.json());
+
+    // Mock auth middleware that always returns 401
+    appWithoutAuth.use((req, res, next) => {
+      return res.status(401).json({ 
+        success: false, 
+        error: { 
+          message: 'Authentication required', 
+          code: 'UNAUTHORIZED' 
+        } 
+      });
+    });
+
+    // Setup routes for appWithoutAuth
+    appWithoutAuth.patch('/products/:id/deactivate', (req, res) => productController.softDeleteProduct(req, res));
+    appWithoutAuth.patch('/products/:id/stock', (req, res) => productController.updateProductStock(req, res));
+    appWithoutAuth.delete('/products/:id', (req, res) => productController.deleteProduct(req, res));
   });
 
   describe('POST /products', () => {
@@ -363,6 +384,319 @@ describe('Product Controller', () => {
         .expect(401);
 
       expect(response.body.message).toBe('Authentication required');
+    });
+  });
+
+  describe('Error Handling Tests', () => {
+    it('should handle internal errors in createProduct', async () => {
+      mockProductUsecase.createProduct.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .post('/products')
+        .send({
+          name: 'Test Product',
+          sku: 'TEST-001',
+          category: 'Electronics',
+          price: 99.99
+        })
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Failed to create product');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should handle internal errors in getAllProducts', async () => {
+      mockProductUsecase.getAllProducts.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .get('/products')
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Internal server error');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should handle internal errors in getProductById', async () => {
+      mockProductUsecase.getProductById.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .get('/products/1')
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Internal server error');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should handle internal errors in updateProduct', async () => {
+      mockProductUsecase.updateProduct.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .put('/products/1')
+        .send({ name: 'Updated Product' })
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Internal server error');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should handle internal errors in deleteProduct', async () => {
+      mockProductUsecase.deleteProduct.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .delete('/products/1')
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Internal server error');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should handle internal errors in softDeleteProduct', async () => {
+      mockProductUsecase.softDeleteProduct.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .patch('/products/1/deactivate')
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Internal server error');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should handle internal errors in updateProductStock', async () => {
+      mockProductUsecase.updateProductStock.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .patch('/products/1/stock')
+        .send({ stock: 100 })
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Internal server error');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should handle internal errors in getProductBySku', async () => {
+      mockProductUsecase.getProductBySku.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .get('/products/sku/TEST-001')
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Internal server error');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should handle internal errors in getProductsByCategory', async () => {
+      mockProductUsecase.getProductsByCategory.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .get('/products/category/Electronics')
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Internal server error');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should handle internal errors in getLowStockProducts', async () => {
+      mockProductUsecase.getLowStockProducts.mockRejectedValue(new Error('Database connection failed'));
+
+      const response = await request(app)
+        .get('/products/reports/low-stock')
+        .expect(500);
+
+      expect(response.body.error.message).toBe('Internal server error');
+      expect(response.body.error.code).toBe('INTERNAL_ERROR');
+    });
+
+    it('should require authentication for softDeleteProduct', async () => {
+      const response = await request(appWithoutAuth)
+        .patch('/products/1/deactivate')
+        .expect(401);
+
+      expect(response.body.error.message).toBe('Authentication required');
+    });
+
+    it('should require authentication for updateProductStock', async () => {
+      const response = await request(appWithoutAuth)
+        .patch('/products/1/stock')
+        .send({ stock: 100 })
+        .expect(401);
+
+      expect(response.body.error.message).toBe('Authentication required');
+    });
+
+    it('should require authentication for deleteProduct', async () => {
+      const response = await request(appWithoutAuth)
+        .delete('/products/1')
+        .expect(401);
+
+      expect(response.body.error.message).toBe('Authentication required');
+    });
+  });
+
+  describe('Branch coverage improvements', () => {
+    const validProductData = {
+      name: 'Test Product',
+      sku: 'TEST-SKU',
+      category: 'Electronics',
+      price: 100.00,
+      weight: 1.5,
+      stock: 10
+    };
+
+    it('should handle error without name and stack properties', async () => {
+      const errorWithoutNameStack = { message: 'Some error without name/stack' };
+      mockProductUsecase.createProduct.mockRejectedValue(errorWithoutNameStack);
+
+      const response = await request(app)
+        .post('/api/products')
+        .set('Authorization', `Bearer ${validToken}`)
+        .send(validProductData);
+
+      expect(response.status).toBe(500);
+      expect(response.body.error.message).toBe('Failed to create product');
+    });
+
+    it('should handle ErrorResponse with undefined statusCode', async () => {
+      const errorResponse = new ErrorResponse('Test error', 'TEST_ERROR');
+      delete errorResponse.statusCode; // Make statusCode undefined
+      mockProductUsecase.createProduct.mockRejectedValue(errorResponse);
+
+      const response = await request(app)
+        .post('/api/products')
+        .set('Authorization', `Bearer ${validToken}`)
+        .send(validProductData);
+
+      expect(response.status).toBe(500);
+    });
+
+    it('should handle getAllProducts with no query parameters', async () => {
+      const mockResponse = { products: [], pagination: { total: 0 } };
+      mockProductUsecase.getAllProducts.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .get('/api/products')
+        .set('Authorization', `Bearer ${validToken}`);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.getAllProducts).toHaveBeenCalledWith({});
+    });
+
+    it('should convert string ID to number in getProductById', async () => {
+      const productId = '123';
+      const mockProduct = { id: 123, name: 'Test Product' };
+      mockProductUsecase.getProductById.mockResolvedValue(mockProduct);
+
+      const response = await request(app)
+        .get(`/api/products/${productId}`)
+        .set('Authorization', `Bearer ${validToken}`);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.getProductById).toHaveBeenCalledWith(123);
+    });
+
+    it('should convert string ID to number in updateProduct', async () => {
+      const productId = '123';
+      const updateData = { name: 'Updated Product' };
+      const mockUpdatedProduct = { id: 123, ...updateData };
+      mockProductUsecase.updateProduct.mockResolvedValue(mockUpdatedProduct);
+
+      const response = await request(app)
+        .put(`/api/products/${productId}`)
+        .set('Authorization', `Bearer ${validToken}`)
+        .send(updateData);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.updateProduct).toHaveBeenCalledWith(123, updateData, 1);
+    });
+
+    it('should convert string ID to number in deleteProduct', async () => {
+      const productId = '123';
+      const mockResponse = { message: 'Product deleted successfully' };
+      mockProductUsecase.deleteProduct.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .delete(`/api/products/${productId}`)
+        .set('Authorization', `Bearer ${validToken}`);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.deleteProduct).toHaveBeenCalledWith(123, 1);
+    });
+
+    it('should convert string ID to number in softDeleteProduct', async () => {
+      const productId = '123';
+      const mockProduct = { id: 123, isActive: false };
+      mockProductUsecase.softDeleteProduct.mockResolvedValue(mockProduct);
+
+      const response = await request(app)
+        .patch(`/api/products/${productId}/deactivate`)
+        .set('Authorization', `Bearer ${validToken}`);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.softDeleteProduct).toHaveBeenCalledWith(123, 1);
+    });
+
+    it('should convert string ID to number in updateProductStock', async () => {
+      const productId = '123';
+      const stockData = { stock: 50 };
+      const mockProduct = { id: 123, stock: 50 };
+      mockProductUsecase.updateProductStock.mockResolvedValue(mockProduct);
+
+      const response = await request(app)
+        .patch(`/api/products/${productId}/stock`)
+        .set('Authorization', `Bearer ${validToken}`)
+        .send(stockData);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.updateProductStock).toHaveBeenCalledWith(123, 50, 1);
+    });
+
+    it('should handle getLowStockProducts with threshold parameter', async () => {
+      const threshold = '5';
+      const mockProducts = [];
+      mockProductUsecase.getLowStockProducts.mockResolvedValue(mockProducts);
+
+      const response = await request(app)
+        .get(`/api/products/low-stock?threshold=${threshold}`)
+        .set('Authorization', `Bearer ${validToken}`);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.getLowStockProducts).toHaveBeenCalledWith(5);
+    });
+
+    it('should handle getLowStockProducts without threshold (uses default)', async () => {
+      const mockProducts = [];
+      mockProductUsecase.getLowStockProducts.mockResolvedValue(mockProducts);
+
+      const response = await request(app)
+        .get('/api/products/low-stock')
+        .set('Authorization', `Bearer ${validToken}`);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.getLowStockProducts).toHaveBeenCalledWith(10);
+    });
+
+    it('should handle getProductsByCategory with query parameters', async () => {
+      const category = 'Electronics';
+      const mockResponse = { products: [], pagination: { total: 0 } };
+      mockProductUsecase.getProductsByCategory.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .get(`/api/products/category/${category}?page=1&limit=10`)
+        .set('Authorization', `Bearer ${validToken}`);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.getProductsByCategory).toHaveBeenCalledWith(category, { page: '1', limit: '10' });
+    });
+
+    it('should handle getAllProducts with query parameters', async () => {
+      const mockResponse = { products: [], pagination: { total: 0 } };
+      mockProductUsecase.getAllProducts.mockResolvedValue(mockResponse);
+
+      const response = await request(app)
+        .get('/api/products?page=1&limit=10&search=test')
+        .set('Authorization', `Bearer ${validToken}`);
+
+      expect(response.status).toBe(200);
+      expect(mockProductUsecase.getAllProducts).toHaveBeenCalledWith({ page: '1', limit: '10', search: 'test' });
     });
   });
 });

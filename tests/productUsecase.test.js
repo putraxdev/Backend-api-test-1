@@ -326,4 +326,128 @@ describe('Product Usecase', () => {
       expect(result).toHaveLength(1);
     });
   });
+
+  describe('Error handling edge cases', () => {
+    it('should handle generic errors in getAllProducts', async () => {
+      mockProductRepository.findAll.mockRejectedValue(new Error('Database connection failed'));
+
+      await expect(productUsecase.getAllProducts()).rejects.toThrow('Failed to fetch products');
+    });
+
+    it('should handle generic errors in getProductById', async () => {
+      mockProductRepository.findById.mockRejectedValue(new Error('Database connection failed'));
+
+      await expect(productUsecase.getProductById(1)).rejects.toThrow('Failed to fetch product');
+    });
+
+    it('should handle generic errors in getProductBySku', async () => {
+      mockProductRepository.findBySku.mockRejectedValue(new Error('Database connection failed'));
+
+      await expect(productUsecase.getProductBySku('TEST-001')).rejects.toThrow('Failed to fetch product');
+    });
+
+    it('should handle update errors when product is not found in updateProduct', async () => {
+      const updateData = { name: 'Updated Product' };
+      mockProductRepository.findById.mockResolvedValue(null);
+
+      await expect(productUsecase.updateProduct(999, updateData, 1)).rejects.toThrow('Product not found');
+    });
+
+    it('should handle SequelizeUniqueConstraintError in updateProduct', async () => {
+      const updateData = { sku: 'EXISTING-SKU' };
+      const existingProduct = { id: 1, name: 'Test Product' };
+      
+      mockProductRepository.findById.mockResolvedValue(existingProduct);
+      const sequelizeError = new Error('Unique constraint violation');
+      sequelizeError.name = 'SequelizeUniqueConstraintError';
+      mockProductRepository.update.mockRejectedValue(sequelizeError);
+
+      await expect(productUsecase.updateProduct(1, updateData, 1)).rejects.toThrow('SKU already exists');
+    });
+
+    it('should handle SequelizeValidationError in updateProduct', async () => {
+      const updateData = { price: -10 };
+      const existingProduct = { id: 1, name: 'Test Product' };
+      
+      mockProductRepository.findById.mockResolvedValue(existingProduct);
+      const sequelizeError = new Error('Validation error');
+      sequelizeError.name = 'SequelizeValidationError';
+      sequelizeError.errors = [{ message: 'Price must be positive' }];
+      mockProductRepository.update.mockRejectedValue(sequelizeError);
+
+      await expect(productUsecase.updateProduct(1, updateData, 1)).rejects.toThrow('Price must be a positive number');
+    });
+
+    it('should handle generic errors in updateProduct', async () => {
+      const updateData = { name: 'Updated Product' };
+      const existingProduct = { id: 1, name: 'Test Product' };
+      
+      mockProductRepository.findById.mockResolvedValue(existingProduct);
+      mockProductRepository.update.mockRejectedValue(new Error('Database connection failed'));
+
+      await expect(productUsecase.updateProduct(1, updateData, 1)).rejects.toThrow('Failed to update product');
+    });
+
+    it('should handle delete errors when product is not found', async () => {
+      mockProductRepository.findById.mockResolvedValue(null);
+
+      await expect(productUsecase.deleteProduct(999, 1)).rejects.toThrow('Product not found');
+    });
+
+    it('should handle delete errors when deletion fails', async () => {
+      const existingProduct = { id: 1, name: 'Test Product' };
+      mockProductRepository.findById.mockResolvedValue(existingProduct);
+      mockProductRepository.delete.mockResolvedValue(false);
+
+      await expect(productUsecase.deleteProduct(1, 1)).rejects.toThrow('Failed to delete product');
+    });
+
+    it('should handle generic errors in deleteProduct', async () => {
+      const existingProduct = { id: 1, name: 'Test Product' };
+      mockProductRepository.findById.mockResolvedValue(existingProduct);
+      mockProductRepository.delete.mockRejectedValue(new Error('Database connection failed'));
+
+      await expect(productUsecase.deleteProduct(1, 1)).rejects.toThrow('Failed to delete product');
+    });
+
+    it('should handle soft delete errors when product is not found', async () => {
+      mockProductRepository.findById.mockResolvedValue(null);
+
+      await expect(productUsecase.softDeleteProduct(999, 1)).rejects.toThrow('Product not found');
+    });
+
+    it('should handle generic errors in softDeleteProduct', async () => {
+      const existingProduct = { id: 1, name: 'Test Product' };
+      mockProductRepository.findById.mockResolvedValue(existingProduct);
+      mockProductRepository.softDelete.mockRejectedValue(new Error('Database connection failed'));
+
+      await expect(productUsecase.softDeleteProduct(1, 1)).rejects.toThrow('Failed to deactivate product');
+    });
+
+    it('should handle updateStock errors when product is not found', async () => {
+      mockProductRepository.findById.mockResolvedValue(null);
+
+      await expect(productUsecase.updateProductStock(999, 50, 1)).rejects.toThrow('Product not found');
+    });
+
+    it('should handle generic errors in updateProductStock', async () => {
+      const existingProduct = { id: 1, name: 'Test Product' };
+      mockProductRepository.findById.mockResolvedValue(existingProduct);
+      mockProductRepository.updateStock.mockRejectedValue(new Error('Database connection failed'));
+
+      await expect(productUsecase.updateProductStock(1, 50, 1)).rejects.toThrow('Failed to update product stock');
+    });
+
+    it('should handle generic errors in getProductsByCategory', async () => {
+      mockProductRepository.findByCategory.mockRejectedValue(new Error('Database connection failed'));
+
+      await expect(productUsecase.getProductsByCategory('Electronics')).rejects.toThrow('Failed to fetch products by category');
+    });
+
+    it('should handle generic errors in getLowStockProducts', async () => {
+      mockProductRepository.findLowStock.mockRejectedValue(new Error('Database connection failed'));
+
+      await expect(productUsecase.getLowStockProducts(5)).rejects.toThrow('Failed to fetch low stock products');
+    });
+  });
 });
