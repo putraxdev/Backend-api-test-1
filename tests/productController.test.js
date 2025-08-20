@@ -1,6 +1,6 @@
 const request = require('supertest');
 const express = require('express');
-const ProductController = require('../src/controllers/productController');
+const { ProductController } = require('../src/controllers/productController');
 const ProductUsecase = require('../src/usecases/productUsecase');
 const { ErrorResponse } = require('../src/dto/errorResponse');
 
