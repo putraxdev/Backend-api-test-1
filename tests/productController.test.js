@@ -78,6 +78,16 @@ describe('Product Controller', () => {
     appWithoutAuth.delete('/products/:id', (req, res) => productController.deleteProduct(req, res));
   });
 
+  afterEach(async () => {
+    // Close any open handles to prevent Jest warnings
+    if (app && app.server) {
+      await new Promise(resolve => app.server.close(resolve));
+    }
+    if (appWithoutAuth && appWithoutAuth.server) {
+      await new Promise(resolve => appWithoutAuth.server.close(resolve));
+    }
+  });
+
   describe('POST /products', () => {
     it('should create product successfully', async () => {
       const productData = {
@@ -547,8 +557,7 @@ describe('Product Controller', () => {
       mockProductUsecase.createProduct.mockRejectedValue(errorWithoutNameStack);
 
       const response = await request(app)
-        .post('/api/products')
-        .set('Authorization', `Bearer ${validToken}`)
+        .post('/products')
         .send(validProductData);
 
       expect(response.status).toBe(500);
@@ -561,8 +570,7 @@ describe('Product Controller', () => {
       mockProductUsecase.createProduct.mockRejectedValue(errorResponse);
 
       const response = await request(app)
-        .post('/api/products')
-        .set('Authorization', `Bearer ${validToken}`)
+        .post('/products')
         .send(validProductData);
 
       expect(response.status).toBe(500);
@@ -573,8 +581,7 @@ describe('Product Controller', () => {
       mockProductUsecase.getAllProducts.mockResolvedValue(mockResponse);
 
       const response = await request(app)
-        .get('/api/products')
-        .set('Authorization', `Bearer ${validToken}`);
+        .get('/products');
 
       expect(response.status).toBe(200);
       expect(mockProductUsecase.getAllProducts).toHaveBeenCalledWith({});
@@ -586,8 +593,7 @@ describe('Product Controller', () => {
       mockProductUsecase.getProductById.mockResolvedValue(mockProduct);
 
       const response = await request(app)
-        .get(`/api/products/${productId}`)
-        .set('Authorization', `Bearer ${validToken}`);
+        .get(`/products/${productId}`);
 
       expect(response.status).toBe(200);
       expect(mockProductUsecase.getProductById).toHaveBeenCalledWith(123);
@@ -600,8 +606,7 @@ describe('Product Controller', () => {
       mockProductUsecase.updateProduct.mockResolvedValue(mockUpdatedProduct);
 
       const response = await request(app)
-        .put(`/api/products/${productId}`)
-        .set('Authorization', `Bearer ${validToken}`)
+        .put(`/products/${productId}`)
         .send(updateData);
 
       expect(response.status).toBe(200);
@@ -614,8 +619,7 @@ describe('Product Controller', () => {
       mockProductUsecase.deleteProduct.mockResolvedValue(mockResponse);
 
       const response = await request(app)
-        .delete(`/api/products/${productId}`)
-        .set('Authorization', `Bearer ${validToken}`);
+        .delete(`/products/${productId}`);
 
       expect(response.status).toBe(200);
       expect(mockProductUsecase.deleteProduct).toHaveBeenCalledWith(123, 1);
@@ -627,8 +631,7 @@ describe('Product Controller', () => {
       mockProductUsecase.softDeleteProduct.mockResolvedValue(mockProduct);
 
       const response = await request(app)
-        .patch(`/api/products/${productId}/deactivate`)
-        .set('Authorization', `Bearer ${validToken}`);
+        .patch(`/products/${productId}/deactivate`);
 
       expect(response.status).toBe(200);
       expect(mockProductUsecase.softDeleteProduct).toHaveBeenCalledWith(123, 1);
@@ -641,8 +644,7 @@ describe('Product Controller', () => {
       mockProductUsecase.updateProductStock.mockResolvedValue(mockProduct);
 
       const response = await request(app)
-        .patch(`/api/products/${productId}/stock`)
-        .set('Authorization', `Bearer ${validToken}`)
+        .patch(`/products/${productId}/stock`)
         .send(stockData);
 
       expect(response.status).toBe(200);
@@ -655,8 +657,7 @@ describe('Product Controller', () => {
       mockProductUsecase.getLowStockProducts.mockResolvedValue(mockProducts);
 
       const response = await request(app)
-        .get(`/api/products/low-stock?threshold=${threshold}`)
-        .set('Authorization', `Bearer ${validToken}`);
+        .get(`/products/low-stock?threshold=${threshold}`);
 
       expect(response.status).toBe(200);
       expect(mockProductUsecase.getLowStockProducts).toHaveBeenCalledWith(5);
@@ -667,8 +668,7 @@ describe('Product Controller', () => {
       mockProductUsecase.getLowStockProducts.mockResolvedValue(mockProducts);
 
       const response = await request(app)
-        .get('/api/products/low-stock')
-        .set('Authorization', `Bearer ${validToken}`);
+        .get('/products/low-stock');
 
       expect(response.status).toBe(200);
       expect(mockProductUsecase.getLowStockProducts).toHaveBeenCalledWith(10);
@@ -680,8 +680,7 @@ describe('Product Controller', () => {
       mockProductUsecase.getProductsByCategory.mockResolvedValue(mockResponse);
 
       const response = await request(app)
-        .get(`/api/products/category/${category}?page=1&limit=10`)
-        .set('Authorization', `Bearer ${validToken}`);
+        .get(`/products/category/${category}?page=1&limit=10`);
 
       expect(response.status).toBe(200);
       expect(mockProductUsecase.getProductsByCategory).toHaveBeenCalledWith(category, { page: '1', limit: '10' });
@@ -692,8 +691,7 @@ describe('Product Controller', () => {
       mockProductUsecase.getAllProducts.mockResolvedValue(mockResponse);
 
       const response = await request(app)
-        .get('/api/products?page=1&limit=10&search=test')
-        .set('Authorization', `Bearer ${validToken}`);
+        .get('/products?page=1&limit=10&search=test');
 
       expect(response.status).toBe(200);
       expect(mockProductUsecase.getAllProducts).toHaveBeenCalledWith({ page: '1', limit: '10', search: 'test' });
