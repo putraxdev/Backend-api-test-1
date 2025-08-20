@@ -1,5 +1,4 @@
 const express = require('express');
-const sequelize = require('../../src/models/db');
 const userRoutes = require('../../src/routes/userRoutes');
 const productRoutes = require('../../src/routes/productRoutes');
 const { ErrorResponse } = require('../../src/dto/errorResponse');

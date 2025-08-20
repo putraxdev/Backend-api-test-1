@@ -29,7 +29,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Failed to create product', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Failed to create product', 'INTERNAL_ERROR'));
     }
   }
 
@@ -48,7 +48,7 @@ class ProductController {
       };
 
       const result = await this.productUsecase.getAllProducts(options);
-      res.json({
+      return res.json({
         success: true,
         message: 'Products fetched successfully',
         data: result,
@@ -60,7 +60,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
     }
   }
 
@@ -69,7 +69,7 @@ class ProductController {
       const { id } = req.params;
       const product = await this.productUsecase.getProductById(id);
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Product fetched successfully',
         data: product,
@@ -81,7 +81,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
     }
   }
 
@@ -90,7 +90,7 @@ class ProductController {
       const { sku } = req.params;
       const product = await this.productUsecase.getProductBySku(sku);
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Product fetched successfully',
         data: product,
@@ -102,7 +102,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
     }
   }
 
@@ -117,7 +117,7 @@ class ProductController {
 
       const product = await this.productUsecase.updateProduct(id, req.body, userId);
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Product updated successfully',
         data: product,
@@ -129,7 +129,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
     }
   }
 
@@ -138,7 +138,7 @@ class ProductController {
       const { id } = req.params;
       const result = await this.productUsecase.deleteProduct(id);
 
-      res.json({
+      return res.json({
         success: true,
         message: result.message,
       });
@@ -149,7 +149,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
     }
   }
 
@@ -176,7 +176,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
     }
   }
 
@@ -192,7 +192,7 @@ class ProductController {
 
       const product = await this.productUsecase.updateProductStock(id, stock, userId);
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Product stock updated successfully',
         data: product,
@@ -204,7 +204,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
     }
   }
 
@@ -213,7 +213,7 @@ class ProductController {
       const { category } = req.params;
       const products = await this.productUsecase.getProductsByCategory(category);
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Products fetched successfully',
         data: products,
@@ -225,7 +225,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
     }
   }
 
@@ -234,7 +234,7 @@ class ProductController {
       const threshold = parseInt(req.query.threshold, 10) || 10;
       const products = await this.productUsecase.getLowStockProducts(threshold);
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Low stock products fetched successfully',
         data: products,
@@ -246,7 +246,7 @@ class ProductController {
         return res.status(error.statusCode || 500).json(error);
       }
 
-      res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
+      return res.status(500).json(new ErrorResponse('Internal server error', 'INTERNAL_ERROR'));
     }
   }
 }

@@ -34,7 +34,7 @@ class ProductRequest {
       errors.push('Name must be at least 2 characters long');
     }
 
-    if (!this.price || isNaN(this.price) || parseFloat(this.price) < 0) {
+    if (!this.price || Number.isNaN(this.price) || parseFloat(this.price) < 0) {
       errors.push('Price must be a positive number');
     }
 
@@ -46,23 +46,24 @@ class ProductRequest {
       errors.push('Category is required');
     }
 
-    if (this.stock !== undefined && (isNaN(this.stock) || parseInt(this.stock, 10) < 0)) {
+    if (this.stock !== undefined && (Number.isNaN(this.stock) || parseInt(this.stock, 10) < 0)) {
       errors.push('Stock must be a non-negative integer');
     }
 
-    if (this.weight !== undefined && this.weight !== null && (isNaN(this.weight) || parseFloat(this.weight) < 0)) {
+    if (this.weight !== undefined && this.weight !== null
+        && (Number.isNaN(this.weight) || parseFloat(this.weight) < 0)) {
       errors.push('Weight must be a positive number');
     }
 
     if (this.dimensions && typeof this.dimensions === 'object') {
       const { length, width, height } = this.dimensions;
-      if (length !== undefined && (isNaN(length) || parseFloat(length) < 0)) {
+      if (length !== undefined && (Number.isNaN(length) || parseFloat(length) < 0)) {
         errors.push('Dimensions length must be a positive number');
       }
-      if (width !== undefined && (isNaN(width) || parseFloat(width) < 0)) {
+      if (width !== undefined && (Number.isNaN(width) || parseFloat(width) < 0)) {
         errors.push('Dimensions width must be a positive number');
       }
-      if (height !== undefined && (isNaN(height) || parseFloat(height) < 0)) {
+      if (height !== undefined && (Number.isNaN(height) || parseFloat(height) < 0)) {
         errors.push('Dimensions height must be a positive number');
       }
     }
@@ -76,10 +77,6 @@ class ProductRequest {
 }
 
 class ProductUpdateRequest extends ProductRequest {
-  constructor(data) {
-    super(data);
-  }
-
   validate() {
     const errors = [];
 
@@ -87,7 +84,7 @@ class ProductUpdateRequest extends ProductRequest {
       errors.push('Name must be at least 2 characters long');
     }
 
-    if (this.price !== undefined && (isNaN(this.price) || parseFloat(this.price) < 0)) {
+    if (this.price !== undefined && (Number.isNaN(this.price) || parseFloat(this.price) < 0)) {
       errors.push('Price must be a positive number');
     }
 
@@ -99,23 +96,24 @@ class ProductUpdateRequest extends ProductRequest {
       errors.push('Category cannot be empty');
     }
 
-    if (this.stock !== undefined && (isNaN(this.stock) || parseInt(this.stock, 10) < 0)) {
+    if (this.stock !== undefined && (Number.isNaN(this.stock) || parseInt(this.stock, 10) < 0)) {
       errors.push('Stock must be a non-negative integer');
     }
 
-    if (this.weight !== undefined && this.weight !== null && (isNaN(this.weight) || parseFloat(this.weight) < 0)) {
+    if (this.weight !== undefined && this.weight !== null
+        && (Number.isNaN(this.weight) || parseFloat(this.weight) < 0)) {
       errors.push('Weight must be a positive number');
     }
 
     if (this.dimensions && typeof this.dimensions === 'object') {
       const { length, width, height } = this.dimensions;
-      if (length !== undefined && (isNaN(length) || parseFloat(length) < 0)) {
+      if (length !== undefined && (Number.isNaN(length) || parseFloat(length) < 0)) {
         errors.push('Dimensions length must be a positive number');
       }
-      if (width !== undefined && (isNaN(width) || parseFloat(width) < 0)) {
+      if (width !== undefined && (Number.isNaN(width) || parseFloat(width) < 0)) {
         errors.push('Dimensions width must be a positive number');
       }
-      if (height !== undefined && (isNaN(height) || parseFloat(height) < 0)) {
+      if (height !== undefined && (Number.isNaN(height) || parseFloat(height) < 0)) {
         errors.push('Dimensions height must be a positive number');
       }
     }
