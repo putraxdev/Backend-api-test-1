@@ -13,7 +13,9 @@
     "coverage": "jest --coverage && codecov"
   },
   "jest": {
-    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/tests/setup.js"
+    ],
     "transform": {
       "^.+\\.js$": "babel-jest"
     },
@@ -39,7 +41,9 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "codecov": "^3.8.3",

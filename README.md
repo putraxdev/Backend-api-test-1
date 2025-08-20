@@ -1,13 +1,13 @@
-# Advanced Backend API
+# Advanced Backend API with Product Management
 
-[![CI/CD Pipeline](https://github.com/putraxdev/test-19-08-2024/actions/workflows/ci.yml/badge.svg)](https://github.com/putraxdev/test-19-08-2024/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/putraxdev/test-19-08-2024/branch/main/graph/badge.svg)](https://codecov.io/gh/putraxdev/test-19-08-2024)
-[![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen)](https://github.com/putraxdev/test-19-08-2024)
-[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)](https://github.com/putraxdev/test-19-08-2024)
+[![CI/CD Pipeline](https://github.com/putraxdev/Backend-api-test-1/actions/workflows/ci.yml/badge.svg)](https://github.com/putraxdev/Backend-api-test-1/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/putraxdev/Backend-api-test-1/branch/main/graph/badge.svg)](https://codecov.io/gh/putraxdev/Backend-api-test-1)
+[![Code Quality](https://img.shields.io/badge/code%20quality-A-brightgreen)](https://github.com/putraxdev/Backend-api-test-1)
+[![Coverage](https://img.shields.io/badge/coverage-95%25-brightgreen)](https://github.com/putraxdev/Backend-api-test-1)
 
 ## 🚀 Overview
 
-Advanced backend API dengan clean architecture, built dengan Node.js, Express, PostgreSQL, dan implementasi best practices untuk production-ready application.
+Advanced backend API dengan clean architecture, built dengan Node.js, Express, PostgreSQL, dan implementasi best practices untuk production-ready application. Dilengkapi dengan sistem manajemen produk yang komprehensif dan dokumentasi API menggunakan Swagger.
 
 ## ✨ Key Features
 
@@ -17,7 +17,15 @@ Advanced backend API dengan clean architecture, built dengan Node.js, Express, P
 - **Middleware Layer**: Authentication, validation, error handling
 - **Dependency Injection**: Loosely coupled components
 
-### 🔒 **Security & Authentication**
+### �️ **Product Management System**
+- **Complete CRUD Operations**: Create, Read, Update, Delete products
+- **Advanced Product Schema**: Name, description, price, SKU, category, stock, dimensions, tags
+- **Stock Management**: Stock tracking dan low stock alerts
+- **Search & Filter**: Search by name/description/SKU, filter by category/price/status
+- **Audit Trail**: createdBy, updatedBy, createdAt, updatedAt untuk setiap produk
+- **Soft Delete**: Deactivate products without permanent deletion
+
+### �🔒 **Security & Authentication**
 - **Password Hashing**: bcrypt dengan salt rounds 12
 - **JWT Authentication**: Advanced JWT dengan claims validation
 - **Request Validation**: Joi schema validation
@@ -25,67 +33,93 @@ Advanced backend API dengan clean architecture, built dengan Node.js, Express, P
 
 ### 🗄️ **Database & ORM**
 - **PostgreSQL**: Production-grade database
-- **Sequelize ORM**: Modern ORM dengan migrations
+- **Sequelize ORM**: Modern ORM dengan associations dan validations
 - **Docker Integration**: Containerized database setup
 - **Adminer**: Web-based database management
+
+### 📚 **API Documentation**
+- **Swagger UI**: Interactive API documentation di `/api-docs`
+- **OpenAPI 3.0**: Standard API specification
+- **Authentication Integration**: Test endpoints langsung dari Swagger
+- **Schema Validation**: Request/response schema documentation
 
 ### 🧪 **Testing & Quality**
 - **TDD Approach**: Test-driven development
 - **95%+ Coverage**: Comprehensive test coverage
 - **Jest Framework**: Unit & integration tests
 - **Supertest**: API endpoint testing
+- **Product Test Suite**: Complete test coverage untuk product features
 
 ### 📊 **Code Quality & CI/CD**
 - **ESLint**: Airbnb style guide (strict mode)
 - **GitHub Actions**: Automated CI/CD pipeline
 - **Codecov**: Coverage tracking & reporting
-- **CodeRabbit**: AI-powered code reviews
 - **Quality Gates**: Strict merge requirements
 
 ### 🐳 **DevOps & Production**
 - **Docker**: Multi-stage production builds
+- **Makefile**: Development automation
 - **Health Checks**: Application monitoring
 - **Environment Config**: 12-factor app compliance
-- **Security Headers**: Production security
 
 ## 📋 Project Structure
 
 ```
 ├── cmd/web/main.js                 # Application entry point
 ├── src/
+## 📁 Project Structure
+
+```
+Backend-api-test-1/
+├── cmd/web/                        # Application entry point
+│   └── main.js                     # Server setup and initialization
+├── src/
 │   ├── controllers/                # HTTP request handlers
-│   │   └── userController.js
+│   │   ├── userController.js
+│   │   └── productController.js    # NEW: Product management
 │   ├── usecases/                   # Business logic layer
-│   │   └── userUsecase.js
+│   │   ├── userUsecase.js
+│   │   └── productUsecase.js       # NEW: Product business logic
 │   ├── repositories/               # Data access layer
-│   │   └── userRepository.js
+│   │   ├── userRepository.js
+│   │   └── productRepository.js    # NEW: Product data access
 │   ├── models/                     # Database models
 │   │   ├── db.js
 │   │   ├── testDb.js
-│   │   └── user.js
+│   │   ├── user.js
+│   │   └── product.js              # NEW: Product model
 │   ├── routes/                     # API routes
-│   │   └── userRoutes.js
+│   │   ├── userRoutes.js
+│   │   └── productRoutes.js        # NEW: Product API routes
 │   ├── middleware/                 # Custom middleware
 │   │   ├── authMiddleware.js
 │   │   └── validateRequest.js
+│   ├── config/                     # Configuration files
+│   │   └── swagger.js              # NEW: Swagger configuration
 │   └── dto/                        # Data transfer objects
 │       ├── userRequest.js
 │       ├── userResponse.js
 │       ├── loginResponse.js
-│       └── errorResponse.js
+│       ├── errorResponse.js
+│       ├── productRequest.js       # NEW: Product DTOs
+│       └── productResponse.js      # NEW: Product response DTOs
 ├── tests/                          # Test files
 │   ├── user.test.js
 │   ├── userUsecase.test.js
 │   ├── repository.test.js
 │   ├── controller.test.js
-│   └── middleware.test.js
+│   ├── middleware.test.js
+│   ├── product.test.js             # NEW: Product model tests
+│   ├── productRepository.test.js   # NEW: Product repository tests
+│   ├── productUsecase.test.js      # NEW: Product usecase tests
+│   └── productController.test.js   # NEW: Product controller tests
 ├── .github/
 │   ├── workflows/ci.yml            # CI/CD pipeline
 │   └── BRANCH_PROTECTION.md        # Branch protection rules
+├── Makefile                        # NEW: Development automation
 ├── docker-compose.yml              # Development services
 ├── Dockerfile                      # Production container
 ├── .eslintrc.json                  # Linting configuration
-├── .coderabbit.yml                 # Code review settings
 └── .githooks/pre-push              # Git hooks
 ```
 
@@ -97,12 +131,34 @@ Advanced backend API dengan clean architecture, built dengan Node.js, Express, P
 - **Docker & Docker Compose**: Latest version
 - **Git**: Latest version
 - **npm**: 9.x or higher
+- **Make**: For using Makefile commands (optional)
 
-### 1. Clone Repository
+### 🚀 Quick Start (Recommended)
+
+The fastest way to get started is using our Makefile:
 
 ```bash
-git clone https://github.com/putraxdev/test-19-08-2024.git
-cd test-19-08-2024
+# Clone repository
+git clone https://github.com/putraxdev/Backend-api-test-1.git
+cd Backend-api-test-1
+
+# One-command setup and run (starts everything!)
+make run
+```
+
+This single command will:
+1. Start PostgreSQL database in Docker
+2. Install dependencies
+3. Run database migrations
+4. Start the application
+5. Show you all available endpoints and documentation
+
+### 🌟 Alternative: Manual Setup
+
+```bash
+# 1. Clone Repository
+git clone https://github.com/putraxdev/Backend-api-test-1.git
+cd Backend-api-test-1
 ```
 
 ### 2. Environment Setup
@@ -185,6 +241,78 @@ npm start
 
 ## 🔧 Development Workflow
 
+### 🛠️ Makefile Commands
+
+We provide a comprehensive Makefile for development automation. Here are the most useful commands:
+
+#### Quick Start Commands
+```bash
+make help           # Show all available commands
+make run            # Complete setup and start (database + app)
+make quick-start    # Setup and start for new developers
+```
+
+#### Development Commands
+```bash
+make install        # Install dependencies
+make dev            # Start development server with auto-reload
+make test           # Run all tests
+make test-watch     # Run tests in watch mode
+make test-coverage  # Run tests with coverage report
+make lint           # Run linter
+make lint-fix       # Fix linting issues
+```
+
+#### Database Commands
+```bash
+make docker-up      # Start PostgreSQL in Docker
+make docker-down    # Stop Docker services
+make db-migrate     # Setup database (handled automatically)
+make db-status      # Check database status
+make db-connect     # Connect to database via CLI
+```
+
+#### Production Commands
+```bash
+make build          # Build for production
+make prod-start     # Start in production mode
+make docker-build   # Build Docker image
+```
+
+#### Utility Commands
+```bash
+make clean          # Clean dependencies and build artifacts
+make info           # Show environment information
+make health         # Check application health
+make logs           # Show application logs
+make stop           # Stop application and services
+make restart        # Restart application
+```
+
+#### Quality & CI Commands
+```bash
+make validate       # Run linting and tests
+make audit          # Run security audit
+make audit-fix      # Fix security vulnerabilities
+make ci             # Run complete CI pipeline
+```
+
+**Example Workflow:**
+```bash
+# New developer setup
+make quick-start
+
+# Daily development
+make dev             # Start dev server
+make test-watch      # Run tests while developing
+
+# Before commit
+make validate        # Ensure code quality
+
+# Production deployment
+make prod-build && make prod-start
+```
+
 ### Git Hooks Setup
 
 ```bash
@@ -217,6 +345,11 @@ Development: http://localhost:3000
 Production: https://your-domain.com
 ```
 
+### 📚 API Documentation
+Interactive API documentation tersedia di **Swagger UI**: 
+- **Local**: http://localhost:3000/api-docs
+- **Features**: Test endpoints langsung, lihat schema, authentication integration
+
 ### Endpoints
 
 #### 🏥 Health Check
@@ -228,9 +361,15 @@ GET /health
 ```json
 {
   "status": "OK",
-  "timestamp": "2025-08-19T07:00:00.000Z"
+  "timestamp": "2025-08-19T07:00:00.000Z",
+  "version": "1.0.0",
+  "documentation": "/api-docs"
 }
 ```
+
+---
+
+## 👤 User Management API
 
 #### 👤 User Registration
 ```http
@@ -239,12 +378,14 @@ Content-Type: application/json
 
 {
   "username": "johndoe",
+  "email": "john@example.com",
   "password": "SecurePass123"
 }
 ```
 
 **Validation Rules:**
 - Username: 3-30 alphanumeric characters
+- Email: Valid email format
 - Password: Min 6 chars, must contain uppercase, lowercase, and number
 
 **Response (201):**
@@ -252,6 +393,7 @@ Content-Type: application/json
 {
   "id": 1,
   "username": "johndoe",
+  "email": "john@example.com",
   "createdAt": "2025-08-19T07:00:00.000Z"
 }
 ```
@@ -274,6 +416,7 @@ Content-Type: application/json
   "user": {
     "id": 1,
     "username": "johndoe",
+    "email": "john@example.com",
     "createdAt": "2025-08-19T07:00:00.000Z"
   },
   "expiresIn": "1h"
@@ -291,7 +434,170 @@ Authorization: Bearer <your-jwt-token>
 {
   "id": 1,
   "username": "johndoe",
+  "email": "john@example.com",
   "createdAt": "2025-08-19T07:00:00.000Z"
+}
+```
+
+---
+
+## 🛍️ Product Management API
+
+#### ✨ Create Product
+```http
+POST /api/products
+Authorization: Bearer <your-jwt-token>
+Content-Type: application/json
+
+{
+  "name": "Laptop Gaming ASUS ROG",
+  "description": "High performance gaming laptop with RTX 4060",
+  "price": 15000000,
+  "sku": "LP-ASUS-ROG-001",
+  "category": "Electronics",
+  "stock": 10,
+  "weight": 2.5,
+  "dimensions": {
+    "length": 35.5,
+    "width": 25.0,
+    "height": 2.5
+  },
+  "tags": ["gaming", "laptop", "asus", "high-performance"]
+}
+```
+
+**Response (201):**
+```json
+{
+  "success": true,
+  "message": "Product created successfully",
+  "data": {
+    "id": 1,
+    "name": "Laptop Gaming ASUS ROG",
+    "description": "High performance gaming laptop with RTX 4060",
+    "price": 15000000,
+    "sku": "LP-ASUS-ROG-001",
+    "category": "Electronics",
+    "stock": 10,
+    "isActive": true,
+    "weight": 2.5,
+    "dimensions": {
+      "length": 35.5,
+      "width": 25.0,
+      "height": 2.5
+    },
+    "tags": ["gaming", "laptop", "asus", "high-performance"],
+    "createdBy": 1,
+    "updatedBy": null,
+    "createdAt": "2025-08-19T07:00:00.000Z",
+    "updatedAt": "2025-08-19T07:00:00.000Z",
+    "creator": {
+      "id": 1,
+      "username": "johndoe",
+      "email": "john@example.com"
+    }
+  }
+}
+```
+
+#### 📋 Get All Products (with Advanced Filtering)
+```http
+GET /api/products?page=1&limit=10&search=laptop&category=electronics&minPrice=1000000&maxPrice=20000000&sortBy=price&sortOrder=ASC
+```
+
+**Query Parameters:**
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 10)
+- `search`: Search by name, description, or SKU
+- `category`: Filter by category
+- `isActive`: Filter by status (true/false)
+- `minPrice` & `maxPrice`: Price range filter
+- `sortBy`: Sort field (name, price, stock, createdAt, etc.)
+- `sortOrder`: ASC or DESC
+
+**Response (200):**
+```json
+{
+  "success": true,
+  "message": "Products fetched successfully",
+  "data": {
+    "products": [
+      {
+        "id": 1,
+        "name": "Laptop Gaming ASUS ROG",
+        "price": 15000000,
+        "sku": "LP-ASUS-ROG-001",
+        "category": "Electronics",
+        "stock": 10,
+        "isActive": true,
+        "createdAt": "2025-08-19T07:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 25,
+      "totalPages": 3
+    }
+  }
+}
+```
+
+#### 🔍 Get Product by ID
+```http
+GET /api/products/1
+```
+
+#### 🔍 Get Product by SKU
+```http
+GET /api/products/sku/LP-ASUS-ROG-001
+```
+
+#### ✏️ Update Product
+```http
+PUT /api/products/1
+Authorization: Bearer <your-jwt-token>
+Content-Type: application/json
+
+{
+  "name": "Laptop Gaming ASUS ROG (Updated)",
+  "price": 14500000,
+  "stock": 15
+}
+```
+
+#### 📦 Update Product Stock
+```http
+PATCH /api/products/1/stock
+Authorization: Bearer <your-jwt-token>
+Content-Type: application/json
+
+{
+  "stock": 25
+}
+```
+
+#### 🗂️ Get Products by Category
+```http
+GET /api/products/category/Electronics
+```
+
+#### ⚠️ Get Low Stock Products
+```http
+GET /api/products/reports/low-stock?threshold=10
+```
+
+#### 💤 Soft Delete (Deactivate Product)
+```http
+PATCH /api/products/1/deactivate
+Authorization: Bearer <your-jwt-token>
+```
+
+#### 🗑️ Hard Delete Product
+```http
+DELETE /api/products/1
+Authorization: Bearer <your-jwt-token>
+```
 }
 ```
 
