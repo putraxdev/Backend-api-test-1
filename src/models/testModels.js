@@ -144,7 +144,7 @@ const Product = sequelize.define('Product', {
               throw new Error('Invalid dimensions format');
             }
           }
-          
+
           if (typeof parsedValue === 'object' && parsedValue !== null) {
             const { length, width, height } = parsedValue;
             if (length !== undefined && (typeof length !== 'number' || length < 0)) {

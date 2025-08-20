@@ -18,8 +18,8 @@ describe('Product Response DTOs', () => {
         creator: {
           id: 1,
           username: 'testuser',
-          email: 'test@example.com'
-        }
+          email: 'test@example.com',
+        },
       };
 
       const response = new ProductResponse(productWithCreator);
@@ -27,7 +27,7 @@ describe('Product Response DTOs', () => {
       expect(response.creator).toEqual({
         id: 1,
         username: 'testuser',
-        email: 'test@example.com'
+        email: 'test@example.com',
       });
     });
 
@@ -47,8 +47,8 @@ describe('Product Response DTOs', () => {
         updater: {
           id: 2,
           username: 'updater',
-          email: 'updater@example.com'
-        }
+          email: 'updater@example.com',
+        },
       };
 
       const response = new ProductResponse(productWithUpdater);
@@ -56,7 +56,7 @@ describe('Product Response DTOs', () => {
       expect(response.updater).toEqual({
         id: 2,
         username: 'updater',
-        email: 'updater@example.com'
+        email: 'updater@example.com',
       });
     });
 
@@ -72,7 +72,7 @@ describe('Product Response DTOs', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       };
 
       const response = new ProductResponse(productWithoutUser);
@@ -85,7 +85,7 @@ describe('Product Response DTOs', () => {
   describe('ProductListResponse', () => {
     it('should create empty list response correctly', () => {
       const response = new ProductListResponse([]);
-      
+
       expect(response.products).toEqual([]);
       expect(response.pagination.total).toBe(0);
       expect(response.pagination.page).toBe(1);
@@ -104,14 +104,14 @@ describe('Product Response DTOs', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       }));
 
       const pagination = {
         page: 2,
         limit: 2,
         total: 5,
-        totalPages: 3
+        totalPages: 3,
       };
 
       const response = new ProductListResponse(products, pagination);

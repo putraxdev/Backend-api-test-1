@@ -17,12 +17,13 @@ describe('Database Configuration', () => {
       DB_NAME: 'test_db',
       DB_USER: 'test_user',
       DB_PASS: 'test_pass',
-      NODE_ENV: 'test'
+      NODE_ENV: 'test',
     };
 
     try {
+      // eslint-disable-next-line global-require
       db = require('../src/repositories/db');
-      
+
       expect(db).toBeDefined();
       expect(typeof db).toBe('object');
     } finally {
@@ -34,9 +35,9 @@ describe('Database Configuration', () => {
     const originalEnv = process.env;
     process.env = {
       ...originalEnv,
-      NODE_ENV: 'test'
+      NODE_ENV: 'test',
     };
-    
+
     // Remove database env vars
     delete process.env.DB_HOST;
     delete process.env.DB_PORT;
@@ -45,6 +46,7 @@ describe('Database Configuration', () => {
     delete process.env.DB_PASS;
 
     try {
+      // eslint-disable-next-line global-require
       db = require('../src/repositories/db');
       expect(db).toBeDefined();
     } finally {
@@ -61,10 +63,11 @@ describe('Database Configuration', () => {
       DB_PORT: '5432',
       DB_NAME: 'dev_db',
       DB_USER: 'dev_user',
-      DB_PASS: 'dev_pass'
+      DB_PASS: 'dev_pass',
     };
 
     try {
+      // eslint-disable-next-line global-require
       db = require('../src/repositories/db');
       expect(db).toBeDefined();
     } finally {
@@ -81,10 +84,11 @@ describe('Database Configuration', () => {
       DB_PORT: '5432',
       DB_NAME: 'prod_db',
       DB_USER: 'prod_user',
-      DB_PASS: 'prod_pass'
+      DB_PASS: 'prod_pass',
     };
 
     try {
+      // eslint-disable-next-line global-require
       db = require('../src/repositories/db');
       expect(db).toBeDefined();
     } finally {
@@ -101,12 +105,13 @@ describe('Database Configuration', () => {
       DB_PORT: '5432',
       DB_NAME: 'test_db',
       DB_USER: 'test_user',
-      DB_PASS: 'test_pass'
+      DB_PASS: 'test_pass',
     };
 
     try {
+      // eslint-disable-next-line global-require
       db = require('../src/repositories/db');
-      
+
       // Should export a sequelize instance or configuration
       expect(db).toBeDefined();
       expect(typeof db).toBe('object');

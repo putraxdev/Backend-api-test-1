@@ -1,5 +1,4 @@
 const ProductUsecase = require('../src/usecases/productUsecase');
-const ProductRepository = require('../src/repositories/productRepository');
 const { ErrorResponse } = require('../src/dto/errorResponse');
 
 // Mock the ProductRepository
@@ -356,7 +355,7 @@ describe('Product Usecase', () => {
     it('should handle SequelizeUniqueConstraintError in updateProduct', async () => {
       const updateData = { sku: 'EXISTING-SKU' };
       const existingProduct = { id: 1, name: 'Test Product' };
-      
+
       mockProductRepository.findById.mockResolvedValue(existingProduct);
       const sequelizeError = new Error('Unique constraint violation');
       sequelizeError.name = 'SequelizeUniqueConstraintError';
@@ -368,7 +367,7 @@ describe('Product Usecase', () => {
     it('should handle SequelizeValidationError in updateProduct', async () => {
       const updateData = { price: -10 };
       const existingProduct = { id: 1, name: 'Test Product' };
-      
+
       mockProductRepository.findById.mockResolvedValue(existingProduct);
       const sequelizeError = new Error('Validation error');
       sequelizeError.name = 'SequelizeValidationError';
@@ -381,7 +380,7 @@ describe('Product Usecase', () => {
     it('should handle generic errors in updateProduct', async () => {
       const updateData = { name: 'Updated Product' };
       const existingProduct = { id: 1, name: 'Test Product' };
-      
+
       mockProductRepository.findById.mockResolvedValue(existingProduct);
       mockProductRepository.update.mockRejectedValue(new Error('Database connection failed'));
 

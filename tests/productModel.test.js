@@ -1,5 +1,4 @@
 const { Product } = require('../src/models/testModels');
-const { DataTypes } = require('sequelize');
 
 describe('Product Model', () => {
   describe('dimensions validation tests', () => {
@@ -13,10 +12,10 @@ describe('Product Model', () => {
         dimensions: {
           length: 10,
           width: 5,
-          height: 3
+          height: 3,
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       // Test valid dimensions
@@ -33,10 +32,10 @@ describe('Product Model', () => {
         dimensions: {
           length: -1,
           width: 5,
-          height: 3
+          height: 3,
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).rejects.toThrow('Length must be a positive number');
@@ -52,10 +51,10 @@ describe('Product Model', () => {
         dimensions: {
           length: 0,
           width: 5,
-          height: 3
+          height: 3,
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).resolves.not.toThrow();
@@ -71,10 +70,10 @@ describe('Product Model', () => {
         dimensions: {
           length: 10,
           width: -1,
-          height: 3
+          height: 3,
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).rejects.toThrow('Width must be a positive number');
@@ -90,10 +89,10 @@ describe('Product Model', () => {
         dimensions: {
           length: 10,
           width: 0,
-          height: 3
+          height: 3,
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).resolves.not.toThrow();
@@ -109,10 +108,10 @@ describe('Product Model', () => {
         dimensions: {
           length: 10,
           width: 5,
-          height: -1
+          height: -1,
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).rejects.toThrow('Height must be a positive number');
@@ -128,10 +127,10 @@ describe('Product Model', () => {
         dimensions: {
           length: 10,
           width: 5,
-          height: 0
+          height: 0,
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).resolves.not.toThrow();
@@ -147,10 +146,10 @@ describe('Product Model', () => {
         dimensions: {
           length: 'invalid',
           width: 5,
-          height: 3
+          height: 3,
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).rejects.toThrow('Length must be a positive number');
@@ -166,10 +165,10 @@ describe('Product Model', () => {
         dimensions: {
           length: 10,
           width: 'invalid',
-          height: 3
+          height: 3,
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).rejects.toThrow('Width must be a positive number');
@@ -185,10 +184,10 @@ describe('Product Model', () => {
         dimensions: {
           length: 10,
           width: 5,
-          height: 'invalid'
+          height: 'invalid',
         },
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).rejects.toThrow('Height must be a positive number');
@@ -203,7 +202,7 @@ describe('Product Model', () => {
         weight: 1.5,
         dimensions: null,
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).resolves.not.toThrow();
@@ -218,7 +217,7 @@ describe('Product Model', () => {
         weight: 1.5,
         dimensions: {},
         createdBy: 1,
-        updatedBy: 1
+        updatedBy: 1,
       });
 
       await expect(product.validate()).resolves.not.toThrow();
@@ -228,13 +227,13 @@ describe('Product Model', () => {
   describe('beforeUpdate hook tests', () => {
     test('should set updatedBy when userId is provided in options', async () => {
       const mockProduct = {
-        updatedBy: null
+        updatedBy: null,
       };
 
       const options = { userId: 42 };
 
       // Get the beforeUpdate hook (it's an array)
-      const hooks = Product.options.hooks;
+      const { hooks } = Product.options;
       const beforeUpdateHook = hooks.beforeUpdate[0];
 
       // Call the hook
@@ -246,13 +245,13 @@ describe('Product Model', () => {
 
     test('should not set updatedBy when userId is not provided in options', async () => {
       const mockProduct = {
-        updatedBy: 1
+        updatedBy: 1,
       };
 
       const options = {}; // No userId
 
       // Get the beforeUpdate hook (it's an array)
-      const hooks = Product.options.hooks;
+      const { hooks } = Product.options;
       const beforeUpdateHook = hooks.beforeUpdate[0];
 
       // Call the hook
@@ -264,13 +263,13 @@ describe('Product Model', () => {
 
     test('should not set updatedBy when userId is null in options', async () => {
       const mockProduct = {
-        updatedBy: 1
+        updatedBy: 1,
       };
 
       const options = { userId: null };
 
       // Get the beforeUpdate hook (it's an array)
-      const hooks = Product.options.hooks;
+      const { hooks } = Product.options;
       const beforeUpdateHook = hooks.beforeUpdate[0];
 
       // Call the hook
@@ -291,8 +290,10 @@ describe('Product Model', () => {
     });
 
     test('should have all required fields defined', () => {
-      const attributes = Product.getTableName ? Object.keys(Product.rawAttributes) : Object.keys(Product.attributes);
-      
+      const attributes = Product.getTableName
+        ? Object.keys(Product.rawAttributes)
+        : Object.keys(Product.attributes);
+
       expect(attributes).toContain('id');
       expect(attributes).toContain('name');
       expect(attributes).toContain('sku');

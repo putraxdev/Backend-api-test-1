@@ -12,7 +12,7 @@ describe('Product Request DTOs', () => {
         stock: 25,
         weight: 1.5,
         dimensions: { length: 10, width: 5, height: 3 },
-        tags: ['tag1', 'tag2']
+        tags: ['tag1', 'tag2'],
       });
 
       const errors = request.validate();
@@ -49,7 +49,7 @@ describe('Product Request DTOs', () => {
         price: 100.50,
         sku: 'TEST-001',
         category: 'Electronics',
-        stock: -5
+        stock: -5,
       });
 
       const errors = request.validate();
@@ -62,7 +62,7 @@ describe('Product Request DTOs', () => {
         price: 100.50,
         sku: 'TEST-001',
         category: 'Electronics',
-        weight: -1.5
+        weight: -1.5,
       });
 
       const errors = request.validate();
@@ -75,7 +75,7 @@ describe('Product Request DTOs', () => {
         price: 100.50,
         sku: 'TEST-001',
         category: 'Electronics',
-        dimensions: { length: -10, width: 5, height: 3 }
+        dimensions: { length: -10, width: 5, height: 3 },
       });
 
       const errors = request.validate();
@@ -88,7 +88,7 @@ describe('Product Request DTOs', () => {
         price: 100.50,
         sku: 'TEST-001',
         category: 'Electronics',
-        dimensions: { length: 10, width: -5, height: 3 }
+        dimensions: { length: 10, width: -5, height: 3 },
       });
 
       const errors = request.validate();
@@ -101,7 +101,7 @@ describe('Product Request DTOs', () => {
         price: 100.50,
         sku: 'TEST-001',
         category: 'Electronics',
-        dimensions: { length: 10, width: 5, height: -3 }
+        dimensions: { length: 10, width: 5, height: -3 },
       });
 
       const errors = request.validate();
@@ -114,7 +114,7 @@ describe('Product Request DTOs', () => {
         price: 100.50,
         sku: 'TEST-001',
         category: 'Electronics',
-        tags: 'not-an-array'
+        tags: 'not-an-array',
       });
 
       const errors = request.validate();
@@ -127,7 +127,7 @@ describe('Product Request DTOs', () => {
       const request = new ProductUpdateRequest({
         name: 'Updated Product',
         price: 150.00,
-        category: 'Updated Category'
+        category: 'Updated Category',
       });
 
       const errors = request.validate();
@@ -136,7 +136,7 @@ describe('Product Request DTOs', () => {
 
     it('should validate undefined name (optional in update)', () => {
       const request = new ProductUpdateRequest({
-        price: 150.00
+        price: 150.00,
         // name is undefined, which is allowed in updates
       });
 
@@ -146,7 +146,7 @@ describe('Product Request DTOs', () => {
 
     it('should validate empty SKU in update', () => {
       const request = new ProductUpdateRequest({
-        sku: ''
+        sku: '',
       });
 
       const errors = request.validate();
@@ -155,7 +155,7 @@ describe('Product Request DTOs', () => {
 
     it('should validate empty category in update', () => {
       const request = new ProductUpdateRequest({
-        category: ''
+        category: '',
       });
 
       const errors = request.validate();
@@ -164,7 +164,7 @@ describe('Product Request DTOs', () => {
 
     it('should validate negative stock in update', () => {
       const request = new ProductUpdateRequest({
-        stock: -10
+        stock: -10,
       });
 
       const errors = request.validate();
@@ -173,7 +173,7 @@ describe('Product Request DTOs', () => {
 
     it('should validate negative weight in update', () => {
       const request = new ProductUpdateRequest({
-        weight: -2.5
+        weight: -2.5,
       });
 
       const errors = request.validate();
@@ -182,7 +182,7 @@ describe('Product Request DTOs', () => {
 
     it('should validate negative dimensions in update', () => {
       const request = new ProductUpdateRequest({
-        dimensions: { length: -10, width: 5, height: 3 }
+        dimensions: { length: -10, width: 5, height: 3 },
       });
 
       const errors = request.validate();
@@ -191,7 +191,7 @@ describe('Product Request DTOs', () => {
 
     it('should validate negative width in dimensions for update', () => {
       const request = new ProductUpdateRequest({
-        dimensions: { length: 10, width: -5, height: 3 }
+        dimensions: { length: 10, width: -5, height: 3 },
       });
 
       const errors = request.validate();
@@ -200,7 +200,7 @@ describe('Product Request DTOs', () => {
 
     it('should validate negative height in dimensions for update', () => {
       const request = new ProductUpdateRequest({
-        dimensions: { length: 10, width: 5, height: -3 }
+        dimensions: { length: 10, width: 5, height: -3 },
       });
 
       const errors = request.validate();
@@ -209,7 +209,7 @@ describe('Product Request DTOs', () => {
 
     it('should validate invalid tags in update', () => {
       const request = new ProductUpdateRequest({
-        tags: 'not-an-array'
+        tags: 'not-an-array',
       });
 
       const errors = request.validate();
@@ -218,7 +218,7 @@ describe('Product Request DTOs', () => {
 
     it('should allow partial updates', () => {
       const request = new ProductUpdateRequest({});
-      
+
       const errors = request.validate();
       expect(errors).toEqual([]);
     });

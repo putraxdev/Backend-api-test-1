@@ -9,6 +9,7 @@ class ProductRepository {
     const dialect = Product.sequelize.getDialect();
     return dialect === 'postgres' ? Op.iLike : Op.like;
   }
+
   async create(productData, userId) {
     try {
       const product = await Product.create({

@@ -13,6 +13,7 @@ class ProductController {
     }
     return error;
   }
+
   constructor() {
     this.productUsecase = new ProductUsecase();
   }
@@ -175,7 +176,7 @@ class ProductController {
       const userId = req.user?.id;
 
       if (!userId) {
-        const authError = new ErrorResponse("Authentication required", "UNAUTHORIZED", 401);
+        const authError = new ErrorResponse('Authentication required', 'UNAUTHORIZED', 401);
         return res.status(401).json(this.formatErrorResponse(authError));
       }
 
@@ -204,7 +205,7 @@ class ProductController {
       const userId = req.user?.id;
 
       if (!userId) {
-        const authError = new ErrorResponse("Authentication required", "UNAUTHORIZED", 401);
+        const authError = new ErrorResponse('Authentication required', 'UNAUTHORIZED', 401);
         return res.status(401).json(this.formatErrorResponse(authError));
       }
 

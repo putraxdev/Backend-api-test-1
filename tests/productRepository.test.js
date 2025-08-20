@@ -2,7 +2,9 @@ const ProductRepository = require('../src/repositories/productRepository');
 const { Product, User, sequelize } = require('../src/models/testModels');
 
 // Mock the actual models
+// eslint-disable-next-line global-require
 jest.mock('../src/models/product', () => require('../src/models/testModels').Product);
+// eslint-disable-next-line global-require
 jest.mock('../src/models/user', () => require('../src/models/testModels').User);
 
 describe('Product Repository', () => {

@@ -62,15 +62,13 @@ describe('Product Controller', () => {
     appWithoutAuth.use(express.json());
 
     // Mock auth middleware that always returns 401
-    appWithoutAuth.use((req, res, next) => {
-      return res.status(401).json({ 
-        success: false, 
-        error: { 
-          message: 'Authentication required', 
-          code: 'UNAUTHORIZED' 
-        } 
-      });
-    });
+    appWithoutAuth.use((req, res) => res.status(401).json({
+      success: false,
+      error: {
+        message: 'Authentication required',
+        code: 'UNAUTHORIZED',
+      },
+    }));
 
     // Setup routes for appWithoutAuth
     appWithoutAuth.patch('/products/:id/deactivate', (req, res) => productController.softDeleteProduct(req, res));
@@ -81,10 +79,14 @@ describe('Product Controller', () => {
   afterEach(async () => {
     // Close any open handles to prevent Jest warnings
     if (app && app.server) {
-      await new Promise(resolve => app.server.close(resolve));
+      await new Promise((resolve) => {
+        app.server.close(resolve);
+      });
     }
     if (appWithoutAuth && appWithoutAuth.server) {
-      await new Promise(resolve => appWithoutAuth.server.close(resolve));
+      await new Promise((resolve) => {
+        appWithoutAuth.server.close(resolve);
+      });
     }
   });
 
@@ -365,21 +367,21 @@ describe('Product Controller', () => {
   });
 
   describe('Authentication Tests', () => {
-    let appWithoutAuth;
+    let appNoAuth;
 
     beforeEach(() => {
-      appWithoutAuth = express();
-      appWithoutAuth.use(express.json());
+      appNoAuth = express();
+      appNoAuth.use(express.json());
 
       const productController = new ProductController();
 
       // No auth middleware - req.user will be undefined
-      appWithoutAuth.post('/products', (req, res) => productController.createProduct(req, res));
-      appWithoutAuth.put('/products/:id', (req, res) => productController.updateProduct(req, res));
+      appNoAuth.post('/products', (req, res) => productController.createProduct(req, res));
+      appNoAuth.put('/products/:id', (req, res) => productController.updateProduct(req, res));
     });
 
     it('should require authentication for creating products', async () => {
-      const response = await request(appWithoutAuth)
+      const response = await request(appNoAuth)
         .post('/products')
         .send({ name: 'Test' })
         .expect(401);
@@ -388,7 +390,7 @@ describe('Product Controller', () => {
     });
 
     it('should require authentication for updating products', async () => {
-      const response = await request(appWithoutAuth)
+      const response = await request(appNoAuth)
         .put('/products/1')
         .send({ name: 'Updated' })
         .expect(401);
@@ -407,7 +409,7 @@ describe('Product Controller', () => {
           name: 'Test Product',
           sku: 'TEST-001',
           category: 'Electronics',
-          price: 99.99
+          price: 99.99,
         })
         .expect(500);
 
@@ -549,7 +551,7 @@ describe('Product Controller', () => {
       category: 'Electronics',
       price: 100.00,
       weight: 1.5,
-      stock: 10
+      stock: 10,
     };
 
     it('should handle error without name and stack properties', async () => {
