@@ -17,7 +17,7 @@ class ProductRepository {
         createdBy: userId,
       });
 
-      return await this.findById(product.id);
+      return product;
     } catch (error) {
       throw error;
     }
@@ -81,12 +81,12 @@ class ProductRepository {
           {
             model: User,
             as: 'creator',
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username'],
           },
           {
             model: User,
             as: 'updater',
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username'],
           },
         ],
       });
@@ -112,12 +112,12 @@ class ProductRepository {
           {
             model: User,
             as: 'creator',
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username'],
           },
           {
             model: User,
             as: 'updater',
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username'],
           },
         ],
       });
@@ -136,12 +136,12 @@ class ProductRepository {
           {
             model: User,
             as: 'creator',
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username'],
           },
           {
             model: User,
             as: 'updater',
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username'],
           },
         ],
       });
@@ -230,12 +230,12 @@ class ProductRepository {
           {
             model: User,
             as: 'creator',
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username'],
           },
           {
             model: User,
             as: 'updater',
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username'],
           },
         ],
         order: [['name', 'ASC']],
@@ -258,7 +258,7 @@ class ProductRepository {
           {
             model: User,
             as: 'creator',
-            attributes: ['id', 'username', 'email'],
+            attributes: ['id', 'username'],
           },
         ],
         order: [['stock', 'ASC']],

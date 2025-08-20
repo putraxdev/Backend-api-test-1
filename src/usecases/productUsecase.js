@@ -39,6 +39,8 @@ class ProductUsecase {
         throw new ErrorResponse(validationErrors.join(', '), 'VALIDATION_ERROR', 400);
       }
 
+      console.log(error);
+
       throw new ErrorResponse('Failed to create product', 'INTERNAL_ERROR', 500);
     }
   }

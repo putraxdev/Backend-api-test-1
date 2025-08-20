@@ -22,7 +22,6 @@ class ProductResponse {
       this.creator = {
         id: product.creator.id,
         username: product.creator.username,
-        email: product.creator.email,
       };
     }
 
@@ -30,7 +29,6 @@ class ProductResponse {
       this.updater = {
         id: product.updater.id,
         username: product.updater.username,
-        email: product.updater.email,
       };
     }
   }
