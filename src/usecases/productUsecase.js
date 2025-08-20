@@ -170,7 +170,7 @@ class ProductUsecase {
 
   async updateProductStock(id, stock, userId) {
     try {
-      if (stock === undefined || stock === null || isNaN(stock) || parseInt(stock, 10) < 0) {
+      if (stock === undefined || stock === null || Number.isNaN(stock) || parseInt(stock, 10) < 0) {
         throw new ErrorResponse('Stock must be a non-negative integer', 'VALIDATION_ERROR', 400);
       }
 
@@ -179,7 +179,11 @@ class ProductUsecase {
         throw new ErrorResponse('Product not found', 'NOT_FOUND', 404);
       }
 
-      const updatedProduct = await this.productRepository.updateStock(id, parseInt(stock, 10), userId);
+      const updatedProduct = await this.productRepository.updateStock(
+        id,
+        parseInt(stock, 10),
+        userId,
+      );
       return ProductResponse.fromProduct(updatedProduct);
     } catch (error) {
       if (error instanceof ErrorResponse) {

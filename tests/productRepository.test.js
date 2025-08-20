@@ -2,8 +2,11 @@ const ProductRepository = require('../src/repositories/productRepository');
 const { Product, User, sequelize } = require('../src/models/testModels');
 
 // Mock the actual models
-jest.mock('../src/models/product', () => require('../src/models/testModels').Product);
-jest.mock('../src/models/user', () => require('../src/models/testModels').User);
+const ProductModel = require('../src/models/testModels').Product;
+const UserModel = require('../src/models/testModels').User;
+
+jest.mock('../src/models/product', () => ProductModel);
+jest.mock('../src/models/user', () => UserModel);
 
 describe('Product Repository', () => {
   let productRepository;
@@ -142,7 +145,8 @@ describe('Product Repository', () => {
       });
 
       expect(result.products.length).toBeGreaterThan(0);
-      expect(result.products.every((p) => parseFloat(p.price) >= 1000000 && parseFloat(p.price) <= 5000000)).toBe(true);
+      expect(result.products.every((p) => parseFloat(p.price) >= 1000000
+        && parseFloat(p.price) <= 5000000)).toBe(true);
     });
 
     it('should support sorting', async () => {
@@ -153,7 +157,7 @@ describe('Product Repository', () => {
 
       expect(result.products).toHaveLength(4);
 
-      for (let i = 1; i < result.products.length; i++) {
+      for (let i = 1; i < result.products.length; i += 1) {
         expect(parseFloat(result.products[i].price))
           .toBeGreaterThanOrEqual(parseFloat(result.products[i - 1].price));
       }

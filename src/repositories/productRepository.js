@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 const { Op } = require('sequelize');
 const Product = require('../models/product');
 const User = require('../models/user');

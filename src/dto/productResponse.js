@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 class ProductResponse {
   constructor(product) {
     this.id = product.id;
@@ -50,7 +51,8 @@ class ProductListResponse {
       page: pagination.page || 1,
       limit: pagination.limit || 10,
       total: pagination.total || products.length,
-      totalPages: pagination.totalPages || Math.ceil((pagination.total || products.length) / (pagination.limit || 10)),
+      totalPages: pagination.totalPages
+        || Math.ceil((pagination.total || products.length) / (pagination.limit || 10)),
     };
   }
 }

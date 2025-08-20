@@ -14,7 +14,7 @@ class ProductController {
       }
 
       const product = await this.productUsecase.createProduct(req.body, userId);
-      res.status(201).json({
+      return res.status(201).json({
         success: true,
         message: 'Product created successfully',
         data: product,
@@ -164,7 +164,7 @@ class ProductController {
 
       const product = await this.productUsecase.softDeleteProduct(id, userId);
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Product deactivated successfully',
         data: product,
