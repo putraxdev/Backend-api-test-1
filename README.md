@@ -249,6 +249,11 @@ We provide a comprehensive Makefile for development automation. Here are the mos
 ```bash
 make help           # Show all available commands
 make run            # Complete setup and start (database + app)
+
+if errors while starting said port errors
+you can run this
+kill -9 $(lsof -t -i:3001)
+
 make quick-start    # Setup and start for new developers
 ```
 
