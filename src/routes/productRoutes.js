@@ -94,8 +94,6 @@ const productController = new ProductController();
  *               type: integer
  *             username:
  *               type: string
- *             email:
- *               type: string
  *           description: Creator user information
  *         updater:
  *           type: object
@@ -103,8 +101,6 @@ const productController = new ProductController();
  *             id:
  *               type: integer
  *             username:
- *               type: string
- *             email:
  *               type: string
  *           description: Last updater user information
  *       example:

@@ -14,7 +14,6 @@ const router = express.Router();
  *       type: object
  *       required:
  *         - username
- *         - email
  *         - password
  *       properties:
  *         id:
@@ -25,10 +24,6 @@ const router = express.Router();
  *           description: The user's username
  *           minLength: 3
  *           maxLength: 30
- *         email:
- *           type: string
- *           description: The user's email address
- *           format: email
  *         password:
  *           type: string
  *           description: The user's password
@@ -44,7 +39,6 @@ const router = express.Router();
  *       example:
  *         id: 1
  *         username: "johndoe"
- *         email: "john@example.com"
  *         createdAt: "2024-01-01T00:00:00.000Z"
  *         updatedAt: "2024-01-01T00:00:00.000Z"
  *
@@ -52,7 +46,6 @@ const router = express.Router();
  *       type: object
  *       required:
  *         - username
- *         - email
  *         - password
  *       properties:
  *         username:
@@ -61,17 +54,12 @@ const router = express.Router();
  *           maxLength: 30
  *           pattern: '^[a-zA-Z0-9]+$'
  *           description: Username (alphanumeric only)
- *         email:
- *           type: string
- *           format: email
- *           description: Valid email address
  *         password:
  *           type: string
  *           minLength: 6
  *           description: Password (min 6 chars, must contain uppercase, lowercase, and number)
  *       example:
  *         username: "johndoe"
- *         email: "john@example.com"
  *         password: "SecurePass123"
  *
  *     UserLoginRequest:
